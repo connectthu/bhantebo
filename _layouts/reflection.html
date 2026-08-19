@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<div class="wrap">
+  <div class="page-header">
+    <p class="eyebrow"><a href="{{ '/reflections/' | relative_url }}">&larr; All Reflections</a></p>
+    <h1>{{ page.title }}</h1>
+    <p class="lede" style="margin-bottom:0">{{ page.date | date: "%B %-d, %Y" }}</p>
+  </div>
+</div>
+
+<div class="section wrap">
+  {% if page.photo and page.photo != "" %}
+  <img src="{{ page.photo | relative_url }}" alt="{{ page.title | escape }}" style="width:100%;max-width:720px;border-radius:8px;margin-bottom:28px">
+  {% endif %}
+  <div style="max-width:70ch;font-size:17px;line-height:1.75;color:var(--ink-soft)">
+    {{ content }}
+  </div>
+</div>

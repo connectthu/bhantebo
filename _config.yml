@@ -1,0 +1,65 @@
+# Site settings
+title: Bhante Bodhicitta
+tagline: "Walk for Peace 2027 — Thudong Pilgrimage Training"
+description: >-
+  A Theravada Buddhist monk's training journal for the 2027 Thudong
+  pilgrimage — a 2,600km walk on foot from Thailand to Borobudur
+  Temple, Indonesia.
+url: "https://bhantebo.com"
+baseurl: ""
+email: hello@bhanteboddhicitta.com
+
+# Theme values (used throughout _includes/*.html and assets/css/style.scss)
+accent_color: "#B6510F"
+
+social:
+  insight_timer: "https://insighttimer.com"
+  padma_refuge: "https://padmarefuge.org"
+  instagram: "https://instagram.com"
+  facebook: "https://facebook.com/BhanteBo"
+  donate: "https://padmarefuge.org/donate"
+
+# Build settings
+markdown: kramdown
+kramdown:
+  input: GFM
+permalink: /:title/
+
+collections:
+  reflections:
+    output: true
+    permalink: /reflections/:year/:month/:day/:title/
+  events:
+    output: false
+
+defaults:
+  - scope:
+      path: ""
+      type: "reflections"
+    values:
+      layout: reflection
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+plugins:
+  - jekyll-feed
+
+# jekyll-feed: generate a dedicated feed for the reflections collection
+# at a clean, stable URL so a newsletter tool (Buttondown) can subscribe
+# to it directly. See https://github.com/jekyll/jekyll-feed#multiple-feeds
+feed:
+  collections:
+    reflections:
+      path: "reflections/feed.xml"
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - Gemfile.localtest
+  - Gemfile.localtest.lock
+  - vendor/
+  - worker/
+  - README.md
+  - node_modules/

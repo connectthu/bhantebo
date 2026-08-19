@@ -1,0 +1,10 @@
+name = "bhantebo-cms-auth"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are NOT set here — they are
+# secrets, set via `wrangler secret put` (see worker/README.md). Never
+# hardcode or commit them.
+
+[observability]
+enabled = true

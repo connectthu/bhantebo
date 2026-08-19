@@ -1,0 +1,55 @@
+backend:
+  name: github
+  repo: connectthu/bhantebo
+  branch: main
+  # ⚠️ REPLACE with your deployed Cloudflare Worker URL (see worker/README.md).
+  # Both base_url and auth_endpoint together must point at the Worker's
+  # /auth route: base_url + "/" + auth_endpoint === "<worker-url>/auth"
+  base_url: https://REPLACE-WITH-YOUR-WORKER.workers.dev
+  auth_endpoint: auth
+
+# Files uploaded through the CMS (photos, etc.) land in /assets/images
+# in the repo and are referenced from published content as /assets/images/...
+media_folder: "assets/images"
+public_folder: "/assets/images"
+
+publish_mode: simple
+site_url: https://bhantebo.com
+display_url: https://bhantebo.com
+logo_url: /assets/images/monk-path-buddha.jpg
+
+collections:
+  - name: "reflections"
+    label: "Reflections"
+    label_singular: "Reflection"
+    description: "Daily photo + reflection posts from the training walk."
+    folder: "_reflections"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    identifier_field: title
+    summary: "{{date}} — {{title}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD", default: "" }
+      - { label: "Photo", name: "photo", widget: "image", media_library: { config: { multiple: false } } }
+      - { label: "Reflection", name: "body", widget: "markdown" }
+
+  - name: "events"
+    label: "Events"
+    label_singular: "Event"
+    description: "Upcoming in-person events."
+    folder: "_events"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    identifier_field: title
+    summary: "{{date}} — {{title}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD", default: "" }
+      - { label: "Time", name: "time", widget: "string", hint: "e.g. 10:00 AM – 2:00 PM · Location" }
+      - { label: "Learn More Link", name: "link", widget: "string", required: false }

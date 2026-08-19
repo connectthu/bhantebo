@@ -1,0 +1,13 @@
+<div class="event-row">
+  <div class="date">{{ include.event.date | date: "%b %-d, %Y" }}</div>
+  <div class="main">
+    <div class="title">{{ include.event.title }}</div>
+    {% if include.event.time %}<div class="meta">{{ include.event.time }}</div>{% endif %}
+    {% if include.event.description %}<p class="desc">{{ include.event.description }}</p>{% endif %}
+    {% if include.event.link and include.event.link != "" %}
+    <div class="tags">
+      <a class="link" href="{{ include.event.link }}" target="_blank" rel="noopener">Learn More &rarr;</a>
+    </div>
+    {% endif %}
+  </div>
+</div>

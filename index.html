@@ -1,0 +1,59 @@
+---
+layout: default
+title: Home
+---
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Thudong Pilgrimage &middot; February&ndash;May 2027</div>
+      <h1>WALK FOR<br>PEACE <span class="accent">2027</span></h1>
+      <div class="subline">THAILAND &middot; MALAYSIA &middot; SINGAPORE &middot; INDONESIA</div>
+      <p class="intro">I have been invited to join the 2027 Thudong pilgrimage &mdash; a 2,600&nbsp;km walking journey on foot from Thailand to Borobudur Temple in Indonesia. If it comes to pass, I will be the first Canadian monk to walk it.</p>
+      <div class="hero-actions">
+        <a href="{{ '/about/' | relative_url }}" class="btn btn-primary">Follow the Training</a>
+        <a href="{{ '/about/' | relative_url }}" class="btn btn-outline">Read the Announcement</a>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img src="{{ '/assets/images/monk-path-buddha.jpg' | relative_url }}" alt="Bhante Bodhicitta walking with his dogs toward the golden Buddha statue at Wutai Shan Buddhist Garden">
+      <div class="badge">~2,600 KM ON FOOT &middot; 4 MONTHS</div>
+    </div>
+  </div>
+</div>
+
+{% include follow-row.html %}
+
+<div id="feed" class="section wrap">
+  <div class="eyebrow">Every Day, On The Path</div>
+  <h2>Daily From The Path</h2>
+  <p class="lede">Bhante posts a short update here every day, so friends without social media can still walk along.</p>
+
+  {% assign latest = site.reflections | sort: 'date' | reverse | slice: 0, 3 %}
+  <div class="feed">
+    {% for reflection in latest %}
+      {% include reflection-card.html reflection=reflection %}
+    {% endfor %}
+  </div>
+  <div class="feed-actions">
+    <a href="{{ '/reflections/' | relative_url }}" class="btn btn-outline">See All Reflections</a>
+  </div>
+</div>
+
+<div class="section wrap">
+  <div class="doc-panel">
+    <div>
+      <div class="eyebrow">In Progress</div>
+      <h2>A Documentary of the Path</h2>
+      <p>We are documenting the training and, if the pilgrimage is confirmed, the full 2,600&nbsp;km journey itself &mdash; robe, bowl, feet, and breath, one step at a time.</p>
+    </div>
+    <a href="mailto:{{ site.email }}?subject=Documentary" class="btn">Support the Film</a>
+  </div>
+</div>
+
+<div class="section wrap newsletter">
+  <div class="eyebrow">Stay Connected</div>
+  <h2>Get Updates by Email</h2>
+  <p class="lede" style="margin:0 auto 20px;text-align:center">Every reflection Bhante posts feeds this stream &mdash; subscribe with any RSS reader today, or watch for the email newsletter coming soon.</p>
+  <a class="feed-link" href="{{ '/reflections/feed.xml' | relative_url }}">&#128225; Subscribe via RSS</a>
+  <p class="note">Email updates via Buttondown are coming soon. &#128591;</p>
+</div>

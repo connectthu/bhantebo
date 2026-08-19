@@ -2,10 +2,7 @@ backend:
   name: github
   repo: connectthu/bhantebo
   branch: main
-  # ⚠️ REPLACE with your deployed Cloudflare Worker URL (see worker/README.md).
-  # Both base_url and auth_endpoint together must point at the Worker's
-  # /auth route: base_url + "/" + auth_endpoint === "<worker-url>/auth"
-  base_url: https://REPLACE-WITH-YOUR-WORKER.workers.dev
+  base_url: https://bhantebo-cms-auth.bhantebo.workers.dev
   auth_endpoint: auth
 
 # Files uploaded through the CMS (photos, etc.) land in /assets/images
@@ -14,9 +11,15 @@ media_folder: "assets/images"
 public_folder: "/assets/images"
 
 publish_mode: simple
-site_url: https://bhantebo.com
-display_url: https://bhantebo.com
-logo_url: /assets/images/monk-path-buddha.jpg
+# ⚠️ TEMPORARY: pointed at the github.io preview until bhantebo.com's DNS
+# is live (see "Deferred custom domain" note in _config.yml / memory).
+# When the custom domain goes live, change all three of these:
+#   site_url:    https://bhantebo.com
+#   display_url: https://bhantebo.com
+#   logo_url:    /assets/images/monk-path-buddha.jpg
+site_url: https://connectthu.github.io/bhantebo/
+display_url: https://connectthu.github.io/bhantebo/
+logo_url: /bhantebo/assets/images/monk-path-buddha.jpg
 
 collections:
   - name: "reflections"

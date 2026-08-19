@@ -36,16 +36,18 @@ you'll point Buttondown at.
 Both collections are edited through `/admin` by either of you — no need to
 touch git directly (though you always can; it's a normal Jekyll site).
 
+## Current status
+
+- ✅ Repo pushed, GitHub Pages enabled and building clean:
+  **https://connectthu.github.io/bhantebo/**
+- ⏸️ Custom domain (`bhantebo.com`) is intentionally **not** wired up yet —
+  see below. Use the `.github.io` URL above for review and for editing
+  through `/admin` in the meantime; nothing about content-editing depends
+  on the final domain.
+
 ## ⚠️ Manual steps still needed
 
-This was built and pushed for you, but a few things only you can do,
-because they involve credentials or an outward-facing publish step:
-
-1. **Push this repo to GitHub**, if I haven't already done so in this
-   session — confirm with me before I push, since it's a public,
-   outward-facing action.
-
-2. **Deploy the Cloudflare Worker.** Full instructions in
+1. **Deploy the Cloudflare Worker.** Full instructions in
    [`worker/README.md`](worker/README.md). Short version:
    ```bash
    cd worker
@@ -58,34 +60,37 @@ because they involve credentials or an outward-facing publish step:
    You'll need a GitHub OAuth App first (steps also in that README) — the
    Worker deploy gives you the exact callback URL to put in it.
 
-3. **Update `admin/config.yml`** — replace the placeholder:
+2. **Update `admin/config.yml`** — replace the placeholder:
    ```yaml
    base_url: https://REPLACE-WITH-YOUR-WORKER.workers.dev
    ```
-   with your real Worker URL from step 2, then commit + push.
+   with your real Worker URL from step 1, then commit + push. This works
+   the same whether `/admin` is served from the `.github.io` URL or the
+   eventual `bhantebo.com` — the Worker's OAuth popup handshake replies to
+   whichever origin opened it, so it isn't tied to one domain.
 
-4. **Enable GitHub Pages** — repo Settings → Pages → Build and deployment:
-   *Deploy from a branch* → `main` / `(root)`. No custom workflow needed;
-   the `github-pages` gem in the `Gemfile` matches what GitHub's Pages
-   build servers already run.
-
-5. **Point DNS at GitHub Pages for `bhantebo.com`** (the `CNAME` file is
-   already in the repo root). Add these records at your DNS provider:
-   ```
-   A     @     185.199.108.153
-   A     @     185.199.109.153
-   A     @     185.199.110.153
-   A     @     185.199.111.153
-   CNAME www   connectthu.github.io.
-   ```
-   Then in repo Settings → Pages, enter `bhantebo.com` as the custom
-   domain and enable "Enforce HTTPS" once the cert provisions.
-
-6. **Add Bhante as a collaborator** on `connectthu/bhantebo` (Settings →
+3. **Add Bhante as a collaborator** on `connectthu/bhantebo` (Settings →
    Collaborators) so his GitHub login works in `/admin`.
 
-7. **Connect Buttondown to the feed** once the site is live:
-   `https://bhantebo.com/reflections/feed.xml`.
+4. **When content is finalized and you're ready to go live**, point
+   `bhantebo.com` at this site:
+   - Add these DNS records at Porkbun:
+     ```
+     A     @     185.199.108.153
+     A     @     185.199.109.153
+     A     @     185.199.110.153
+     A     @     185.199.111.153
+     CNAME www   connectthu.github.io.
+     ```
+   - Re-add a `CNAME` file at the repo root containing `bhantebo.com`, and
+     set it on Pages (either in repo Settings → Pages, or
+     `gh api repos/connectthu/bhantebo/pages -X PUT -f "cname=bhantebo.com"`).
+   - Enable "Enforce HTTPS" in Settings → Pages once the cert provisions.
+
+5. **Connect Buttondown to the feed** once the site is live:
+   `https://bhantebo.com/reflections/feed.xml` (or the `.github.io`
+   equivalent in the meantime, though you'll want to switch it once the
+   custom domain is live so subscriber links don't break).
 
 ## Local development
 

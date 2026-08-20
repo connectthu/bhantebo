@@ -42,7 +42,15 @@ future: true
 collections:
   reflections:
     output: true
-    permalink: /reflections/:year/:month/:day/:title/
+    # :name (not :title!) on purpose. Jekyll's :title placeholder applies
+    # _posts-style date-prefix stripping to ANY filename shaped like
+    # YYYY-MM-DD-something — e.g. "2026-08-19-1.md" silently becomes just
+    # "1" in the URL — even for a collection that was never meant to use
+    # that convention. :name is always the literal filename, slugified,
+    # never stripped. This makes every reflection's URL predictable from
+    # its filename regardless of how it was created (Decap's own "-1",
+    # "-2" auto-dedup suffix on same-day collisions included).
+    permalink: /reflections/:year/:month/:day/:name/
   events:
     output: false
 

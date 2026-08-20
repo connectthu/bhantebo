@@ -5,18 +5,19 @@ backend:
   base_url: https://bhantebo-cms-auth.bhantebo.workers.dev
   auth_endpoint: auth
 
-# Files uploaded through the CMS (photos, etc.) land in /assets/images
-# in the repo and are referenced from published content as /assets/images/...
+# Files uploaded through the CMS (photos, etc.) land in /assets/images in
+# the repo. public_folder is the URL path the CMS uses to preview them —
+# ⚠️ TEMPORARY: prefixed with /bhantebo until bhantebo.com's DNS is live
+# (see "Deferred custom domain" note in _config.yml / memory). When the
+# custom domain goes live, change all four of these back:
+#   public_folder: /assets/images
+#   site_url:      https://bhantebo.com
+#   display_url:   https://bhantebo.com
+#   logo_url:      /assets/images/monk-path-buddha.jpg
 media_folder: "assets/images"
-public_folder: "/assets/images"
+public_folder: "/bhantebo/assets/images"
 
 publish_mode: simple
-# ⚠️ TEMPORARY: pointed at the github.io preview until bhantebo.com's DNS
-# is live (see "Deferred custom domain" note in _config.yml / memory).
-# When the custom domain goes live, change all three of these:
-#   site_url:    https://bhantebo.com
-#   display_url: https://bhantebo.com
-#   logo_url:    /assets/images/monk-path-buddha.jpg
 site_url: https://connectthu.github.io/bhantebo/
 display_url: https://connectthu.github.io/bhantebo/
 logo_url: /bhantebo/assets/images/monk-path-buddha.jpg

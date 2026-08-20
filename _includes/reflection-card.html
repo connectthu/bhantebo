@@ -1,10 +1,13 @@
+{% assign formatted_date = include.reflection.date | date: "%B %-d, %Y" %}
 <article class="reflection-card">
   <a href="{{ include.reflection.url | relative_url }}">
     <img src="{{ include.reflection.photo | relative_url }}" alt="{{ include.reflection.title | escape }}">
   </a>
   <div class="body">
-    <div class="date">{{ include.reflection.date | date: "%b %-d, %Y" }}</div>
+    <div class="date"><a href="{{ include.reflection.url | relative_url }}">{{ include.reflection.date | date: "%b %-d, %Y" }}</a></div>
+    {% if include.reflection.title != formatted_date %}
     <p><a href="{{ include.reflection.url | relative_url }}">{{ include.reflection.title }}</a></p>
+    {% endif %}
     <p>{{ include.reflection.content | strip_html | truncatewords: 42 }}</p>
   </div>
 </article>

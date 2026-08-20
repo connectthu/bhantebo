@@ -30,6 +30,15 @@ kramdown:
   input: GFM
 permalink: /:title/
 
+# Jekyll excludes any dated content whose date is in the future relative to
+# the *build server's* clock (UTC on GitHub Pages). For a same-day training
+# journal that's a footgun, not a feature: a reflection posted in the
+# evening in a timezone behind UTC can read as "future" until UTC catches
+# up to that calendar date, and would silently not appear on the site for
+# several hours. There's no scheduled-publishing use case here, so disable
+# the exclusion entirely.
+future: true
+
 collections:
   reflections:
     output: true

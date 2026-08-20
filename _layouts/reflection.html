@@ -5,7 +5,10 @@ layout: default
   <div class="page-header">
     <p class="eyebrow"><a href="{{ '/reflections/' | relative_url }}">&larr; All Reflections</a></p>
     <h1>{{ page.title }}</h1>
-    <p class="lede" style="margin-bottom:0">{{ page.date | date: "%B %-d, %Y" }}</p>
+    {% assign formatted_date = page.date | date: "%B %-d, %Y" %}
+    {% if page.title != formatted_date %}
+    <p class="lede" style="margin-bottom:0">{{ formatted_date }}</p>
+    {% endif %}
   </div>
 </div>
 

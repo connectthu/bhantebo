@@ -35,7 +35,7 @@ collections:
     summary: "{{date}} — {{title}}"
     sortable_fields: ["date", "title"]
     fields:
-      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Title", name: "title", widget: "string", hint: "Keep it short — this becomes the page URL and the card headline. Put the full thought in the Reflection field below.", pattern: ["^.{1,80}$", "Please keep the title under 80 characters."] }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
       - { label: "Photo", name: "photo", widget: "image", media_library: { config: { multiple: false } } }
       - { label: "Reflection", name: "body", widget: "markdown" }
@@ -52,7 +52,7 @@ collections:
     summary: "{{date}} — {{title}}"
     sortable_fields: ["date", "title"]
     fields:
-      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Title", name: "title", widget: "string", pattern: ["^.{1,80}$", "Please keep the title under 80 characters."] }
       - { label: "Description", name: "description", widget: "text" }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
       - { label: "Time", name: "time", widget: "string", hint: "e.g. 10:00 AM – 2:00 PM · Location" }

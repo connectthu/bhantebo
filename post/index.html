@@ -185,6 +185,41 @@
   var TOKEN_KEY = "bhantebo_post_token";
   var DRAFT_KEY = "bhantebo_post_draft";
 
+  // Dharma-adjacent vocabulary used to pick a slug word from the post's own
+  // text (e.g. "compassion" -> /reflections/2026/08/19/compassion/) instead
+  // of a plain date. Only applies to posts made here — Decap's slug
+  // templates (used for the bulk import via /admin) can't do content
+  // analysis, so those stay date-based.
+  var SLUG_WORDS = [
+    "dharma","dhamma","sangha","karma","samsara","nirvana","buddha","buddhism","buddhist",
+    "monk","monastic","monastery","meditation","mindfulness","compassion","suffering",
+    "wisdom","peace","liberation","enlightenment","attachment","impermanence","precepts",
+    "refuge","metta","equanimity","practice","presence","breath","awakening","pilgrimage",
+    "temple","teaching","virtue","generosity","patience","humility","gratitude","stillness",
+    "silence","training","discipline","renunciation","craving","delusion","insight",
+    "ordination","robe","dukkha","vipassana","samadhi"
+  ];
+
+  // Ranks SLUG_WORDS by how often each appears in the text (simple plural-
+  // aware whole-word match), most frequent first, ties broken by whichever
+  // was mentioned earliest. Returns [] if none appear.
+  function rankSlugWords(text) {
+    var lower = text.toLowerCase();
+    var counts = {}, firstIndex = {};
+    SLUG_WORDS.forEach(function (word) {
+      var re = new RegExp("\\b" + word + "s?\\b", "g");
+      var match, count = 0, idx = -1;
+      while ((match = re.exec(lower))) {
+        count++;
+        if (idx === -1) idx = match.index;
+      }
+      if (count > 0 && !(word in counts)) { counts[word] = count; firstIndex[word] = idx; }
+    });
+    return Object.keys(counts).sort(function (a, b) {
+      return counts[b] - counts[a] || firstIndex[a] - firstIndex[b];
+    });
+  }
+
   var els = {};
   ["login-screen","composer-screen","success-screen","list-screen","login-btn","login-error",
    "topbar-context","topbar-actions","photo-tile","photo-input","body-text","post-btn",
@@ -449,6 +484,38 @@
       .then(function (r) { return r.status === 200; });
   }
 
+  // Picks _reflections/<name>.md for a new post: prefers a dharma word
+  // pulled from the text itself (see rankSlugWords), trying candidates in
+  // order until one isn't already taken — _reflections is a flat
+  // directory, so "compassion" from a different day is still a
+  // collision. Falls back to the date (with the existing same-day "-HHMM"
+  // suffix) if no candidate word is found or all of them are taken.
+  function resolveMdPath(text, dateStr, p) {
+    var candidates = rankSlugWords(text);
+
+    function tryNext(i) {
+      if (i >= candidates.length) return Promise.resolve(null);
+      var path = "_reflections/" + candidates[i] + ".md";
+      return fileExists(path).then(function (exists) {
+        return exists ? tryNext(i + 1) : path;
+      });
+    }
+
+    return tryNext(0).then(function (wordPath) {
+      if (wordPath) return wordPath;
+      if (candidates.length > 0) {
+        // Every matching word already taken — disambiguate the top one
+        // with today's date rather than falling all the way back.
+        return "_reflections/" + candidates[0] + "-" + dateStr + ".md";
+      }
+      var datePath = "_reflections/" + dateStr + ".md";
+      return fileExists(datePath).then(function (exists) {
+        // Same "-N" shape Decap's own same-day collision suffix uses.
+        return exists ? "_reflections/" + dateStr + "-" + p.hh + p.mm + ".md" : datePath;
+      });
+    });
+  }
+
   function getFile(path) {
     return ghFetch(contentsUrl(path) + "?ref=" + GITHUB_BRANCH).then(function (r) {
       if (!r.ok) throw new Error("Couldn't load that file (GitHub API " + r.status + ").");
@@ -544,18 +611,16 @@
     var dateStr = p.y + "-" + p.m + "-" + p.day;
     var titleStr = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-    var mdPath = "_reflections/" + dateStr + ".md";
+    var mdPath;
 
-    fileExists(mdPath).then(function (exists) {
-      // Same "-N" shape Decap's own same-day collision suffix uses.
-      if (exists) mdPath = "_reflections/" + dateStr + "-" + p.hh + p.mm + ".md";
-
-      return resolvePhotoPath("post").then(function (photoPath) {
-        var frontMatter = "---\ntitle: " + yamlEscape(titleStr) + "\ndate: " + dateStr +
-          (photoPath ? "\nphoto: " + photoPath : "") + "\n---\n" + text + "\n";
-        var b64 = btoa(unescape(encodeURIComponent(frontMatter)));
-        return putFile(mdPath, b64, "Post reflection: " + titleStr);
-      });
+    resolveMdPath(text, dateStr, p).then(function (resolvedPath) {
+      mdPath = resolvedPath;
+      return resolvePhotoPath("post");
+    }).then(function (photoPath) {
+      var frontMatter = "---\ntitle: " + yamlEscape(titleStr) + "\ndate: " + dateStr +
+        (photoPath ? "\nphoto: " + photoPath : "") + "\n---\n" + text + "\n";
+      var b64 = btoa(unescape(encodeURIComponent(frontMatter)));
+      return putFile(mdPath, b64, "Post reflection: " + titleStr);
     }).then(function () {
       clearDraft();
       photoBlob = null;

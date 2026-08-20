@@ -30,12 +30,14 @@ collections:
     folder: "_reflections"
     create: true
     delete: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    # Filename is always just the date, regardless of title — keeps every
+    # reflection's file/URL short no matter what's typed in Title.
+    slug: "{{year}}-{{month}}-{{day}}"
     identifier_field: title
     summary: "{{date}} — {{title}}"
     sortable_fields: ["date", "title"]
     fields:
-      - { label: "Title", name: "title", widget: "string", hint: "Keep it short — this becomes the page URL and the card headline. Put the full thought in the Reflection field below.", pattern: ["^.{1,80}$", "Please keep the title under 80 characters."] }
+      - { label: "Title", name: "title", widget: "string", hint: "A short line — the date works well on its own (e.g. \"August 20, 2026\"), or add a brief phrase like \"Day 41 — One Million Steps.\" Put the full reflection in the field below.", pattern: ["^.{1,80}$", "Please keep the title under 80 characters."] }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
       - { label: "Photo", name: "photo", widget: "image", media_library: { config: { multiple: false } } }
       - { label: "Reflection", name: "body", widget: "markdown" }

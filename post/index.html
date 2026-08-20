@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Post a Reflection</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#B6510F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Post">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="../assets/images/icon-192.png">
+<link rel="icon" href="../assets/images/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Lora:ital,wght@0,400;0,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6EFE3; --ink:#241C15; --ink-soft:#4A3E32; --ink-mute:#6B5D4F; --ink-faint:#8A7B6A;
+    --card:#FFFCF6; --border:rgba(36,28,21,0.12); --accent:#B6510F; --accent-hover:#8C3D0A;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink-soft); font-family:'Lora',serif;
+    -webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+    padding-left:env(safe-area-inset-left); padding-right:env(safe-area-inset-right);
+    display:flex; flex-direction:column;
+  }
+  .screen{ flex:1; display:flex; flex-direction:column; min-height:100vh; }
+  .hidden{ display:none !important; }
+
+  /* ---------- Login screen ---------- */
+  #login-screen{ align-items:center; justify-content:center; text-align:center; padding:32px; gap:18px; }
+  #login-screen .brand{ font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; letter-spacing:0.08em; color:var(--ink); text-transform:uppercase; }
+  #login-screen h1{ font-family:'Oswald',sans-serif; font-weight:700; font-size:28px; color:var(--ink); margin:0; }
+  #login-screen p{ font-size:15.5px; line-height:1.6; color:var(--ink-mute); max-width:32ch; margin:0; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:system-ui,sans-serif; font-weight:600; font-size:16px;
+    padding:15px 28px; border-radius:10px; border:none; cursor:pointer;
+    background:var(--accent); color:#FFF9F0; min-height:50px;
+  }
+  .btn:active{ background:var(--accent-hover); }
+  .btn:disabled{ opacity:0.55; }
+  .btn-block{ width:100%; }
+
+  /* ---------- Composer screen ---------- */
+  #composer-screen{ padding:0; }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px; border-bottom:1px solid var(--border);
+  }
+  .topbar .who{ font-family:system-ui,sans-serif; font-size:13px; color:var(--ink-faint); }
+  .topbar .who b{ color:var(--ink-soft); }
+  .topbar a, .topbar button.link{
+    font-family:system-ui,sans-serif; font-size:13px; color:var(--ink-faint);
+    background:none; border:none; padding:6px; cursor:pointer;
+  }
+  .composer-body{ flex:1; display:flex; flex-direction:column; padding:16px; gap:14px; overflow-y:auto; }
+
+  .photo-tile{
+    width:100%; aspect-ratio:4/3; border-radius:14px; border:2px dashed var(--border);
+    background:var(--card); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; cursor:pointer; overflow:hidden; position:relative; color:var(--ink-faint);
+  }
+  .photo-tile.has-photo{ border-style:solid; border-color:var(--border); }
+  .photo-tile img{ width:100%; height:100%; object-fit:cover; }
+  .photo-tile .plus{ font-size:34px; line-height:1; color:var(--accent); }
+  .photo-tile .label{ font-family:system-ui,sans-serif; font-size:14px; font-weight:600; }
+  .photo-tile .remove{
+    position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
+    background:rgba(36,28,21,0.65); color:#fff; border:none; font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #photo-input{ display:none; }
+
+  #body-text{
+    flex:0 0 auto; min-height:160px; width:100%; resize:none; border:none; background:transparent;
+    font-family:'Lora',serif; font-size:17px; line-height:1.6; color:var(--ink); padding:4px 2px;
+    overflow:hidden; /* height is driven by JS auto-grow, not a scrollbar */
+  }
+  #body-text:focus{ outline:none; }
+  #body-text::placeholder{ color:var(--ink-faint); }
+
+  .composer-footer{ padding:14px 16px; border-top:1px solid var(--border); }
+  .status{ font-family:system-ui,sans-serif; font-size:13.5px; text-align:center; margin:0 0 10px; min-height:0; }
+  .status.error{ color:#B02A2A; }
+  .status.ok{ color:#2E6B3E; }
+
+  /* ---------- Success screen ---------- */
+  #success-screen{ align-items:center; justify-content:center; text-align:center; padding:32px; gap:16px; }
+  #success-screen .check{ font-size:52px; }
+  #success-screen h1{ font-family:'Oswald',sans-serif; font-weight:700; font-size:24px; color:var(--ink); margin:0; }
+  #success-screen a{ color:var(--accent); font-family:system-ui,sans-serif; font-size:14px; }
+
+  .spinner{
+    width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,249,240,0.5);
+    border-top-color:#FFF9F0; animation:spin 0.7s linear infinite; display:inline-block;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="screen">
+  <div class="brand">Bhante Bodhicitta</div>
+  <h1>Post a Reflection</h1>
+  <p>Sign in with the GitHub account you use for the site to post a quick photo + reflection.</p>
+  <button id="login-btn" class="btn">Sign in with GitHub</button>
+  <p id="login-error" class="status error hidden"></p>
+</div>
+
+<div id="composer-screen" class="screen hidden">
+  <div class="topbar">
+    <span class="who">Posting as <b id="who-name">…</b></span>
+    <button class="link" id="logout-btn">Sign out</button>
+  </div>
+  <div class="composer-body">
+    <div id="photo-tile" class="photo-tile">
+      <span class="plus">+</span>
+      <span class="label">Add Photo</span>
+    </div>
+    <input id="photo-input" type="file" accept="image/*" capture="environment">
+    <textarea id="body-text" placeholder="Share today's reflection…"></textarea>
+  </div>
+  <div class="composer-footer">
+    <p id="post-status" class="status hidden"></p>
+    <button id="post-btn" class="btn btn-block">Post</button>
+  </div>
+</div>
+
+<div id="success-screen" class="screen hidden">
+  <div class="check">🙏</div>
+  <h1>Posted</h1>
+  <a id="success-link" href="#" target="_blank" rel="noopener">View it live →</a>
+  <button id="post-another-btn" class="btn" style="margin-top:8px">Post Another</button>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Must match admin/config.yml's backend.base_url — same Worker, same
+  // OAuth App, same repo. If you redeploy the Worker, update both places.
+  var WORKER_BASE_URL = "https://bhantebo-cms-auth.bhantebo.workers.dev";
+  var GITHUB_OWNER = "connectthu";
+  var GITHUB_REPO = "bhantebo";
+  var GITHUB_BRANCH = "main";
+  var TOKEN_KEY = "bhantebo_post_token";
+  var DRAFT_KEY = "bhantebo_post_draft";
+
+  var els = {};
+  ["login-screen","composer-screen","success-screen","login-btn","login-error",
+   "who-name","logout-btn","photo-tile","photo-input","body-text","post-btn",
+   "post-status","success-link","post-another-btn"].forEach(function (id) {
+    els[id] = document.getElementById(id);
+  });
+
+  function showScreen(name) {
+    ["login-screen","composer-screen","success-screen"].forEach(function (s) {
+      els[s].classList.toggle("hidden", s !== name);
+    });
+  }
+
+  function setStatus(el, text, kind) {
+    el.textContent = text || "";
+    el.classList.remove("error", "ok");
+    if (kind) el.classList.add(kind);
+    el.classList.toggle("hidden", !text);
+  }
+
+  // ---------------- Auth (same postMessage handshake as Decap CMS) ----------------
+
+  function login() {
+    return new Promise(function (resolve, reject) {
+      var width = 600, height = 700;
+      var left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
+      var top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
+      var popup = window.open(
+        WORKER_BASE_URL + "/auth",
+        "github-oauth",
+        "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top
+      );
+      if (!popup) {
+        reject(new Error("Popup was blocked — please allow popups for this site and try again."));
+        return;
+      }
+      var workerOrigin = new URL(WORKER_BASE_URL).origin;
+
+      function onMessage(e) {
+        if (e.origin !== workerOrigin) return; // only trust our own Worker
+        var data = e.data;
+        if (data === "authorizing:github") {
+          // Echo back so the popup can capture our origin as the safe
+          // target for the real token (mirrors the Worker's handshake).
+          popup.postMessage("authorizing:github", workerOrigin);
+          return;
+        }
+        var match = /^authorization:github:(success|error):(.+)$/.exec(data);
+        if (!match) return;
+        window.removeEventListener("message", onMessage);
+        var payload;
+        try { payload = JSON.parse(match[2]); } catch (err) { payload = {}; }
+        if (match[1] === "success") {
+          resolve(payload.token);
+        } else {
+          reject(new Error(payload.message || "GitHub login failed."));
+        }
+      }
+      window.addEventListener("message", onMessage);
+    });
+  }
+
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+  function saveToken(t) { localStorage.setItem(TOKEN_KEY, t); }
+  function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+
+  function ghFetch(path, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign({
+      "Authorization": "token " + getToken(),
+      "Accept": "application/vnd.github+json"
+    }, opts.headers || {});
+    return fetch("https://api.github.com" + path, opts);
+  }
+
+  function whoAmI() {
+    return ghFetch("/user").then(function (r) {
+      if (!r.ok) throw new Error("unauthorized");
+      return r.json();
+    });
+  }
+
+  // ---------------- Photo handling ----------------
+
+  var photoBlob = null; // compressed JPEG Blob, or null
+
+  function resizeAndCompress(file) {
+    if (typeof createImageBitmap !== "function") return Promise.resolve(file);
+    return createImageBitmap(file, { imageOrientation: "from-image" }).then(function (bitmap) {
+      var maxDim = 1600;
+      var scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+      var w = Math.round(bitmap.width * scale);
+      var h = Math.round(bitmap.height * scale);
+      var canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(bitmap, 0, 0, w, h);
+      return new Promise(function (resolve, reject) {
+        canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error("toBlob failed")); }, "image/jpeg", 0.85);
+      });
+    }).catch(function () {
+      // Fall back to the original file untouched rather than blocking the post.
+      return file;
+    });
+  }
+
+  function renderPhotoTile() {
+    var tile = els["photo-tile"];
+    if (photoBlob) {
+      var url = URL.createObjectURL(photoBlob);
+      tile.classList.add("has-photo");
+      tile.innerHTML = '<img src="' + url + '" alt="Selected photo">' +
+        '<button type="button" class="remove" id="remove-photo-btn" aria-label="Remove photo">×</button>';
+      document.getElementById("remove-photo-btn").addEventListener("click", function (e) {
+        e.stopPropagation();
+        photoBlob = null;
+        renderPhotoTile();
+      });
+    } else {
+      tile.classList.remove("has-photo");
+      tile.innerHTML = '<span class="plus">+</span><span class="label">Add Photo</span>';
+    }
+  }
+
+  els["photo-tile"].addEventListener("click", function () { els["photo-input"].click(); });
+  els["photo-input"].addEventListener("change", function () {
+    var file = els["photo-input"].files[0];
+    els["photo-input"].value = "";
+    if (!file) return;
+    setStatus(els["post-status"], "Processing photo…");
+    resizeAndCompress(file).then(function (blob) {
+      photoBlob = blob;
+      renderPhotoTile();
+      setStatus(els["post-status"], "");
+    }).catch(function () {
+      setStatus(els["post-status"], "Couldn't process that photo — try another.", "error");
+    });
+  });
+
+  // ---------------- Draft persistence ----------------
+
+  function saveDraft() { localStorage.setItem(DRAFT_KEY, els["body-text"].value); }
+  function loadDraft() {
+    var d = localStorage.getItem(DRAFT_KEY);
+    if (d) els["body-text"].value = d;
+  }
+  function clearDraft() { localStorage.removeItem(DRAFT_KEY); }
+
+  // Grows the textarea to fit whatever's been written — no length limit,
+  // no internal scrollbar hiding the writing. Long-form is the point.
+  function autoGrow() {
+    var el = els["body-text"];
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }
+  var draftTimer = null;
+  els["body-text"].addEventListener("input", function () {
+    autoGrow();
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(saveDraft, 400);
+  });
+
+  // ---------------- Posting ----------------
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  function localDateParts(d) {
+    return { y: d.getFullYear(), m: pad(d.getMonth() + 1), day: pad(d.getDate()),
+             hh: pad(d.getHours()), mm: pad(d.getMinutes()), ss: pad(d.getSeconds()) };
+  }
+
+  function blobToBase64(blob) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(reader.result.split(",")[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function fileExists(path) {
+    return ghFetch("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path + "?ref=" + GITHUB_BRANCH)
+      .then(function (r) { return r.status === 200; });
+  }
+
+  function putFile(path, contentB64, message) {
+    return ghFetch("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path, {
+      method: "PUT",
+      body: JSON.stringify({ message: message, content: contentB64, branch: GITHUB_BRANCH })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (b) { throw new Error(b.message || ("GitHub API error " + r.status)); });
+      return r.json();
+    });
+  }
+
+  function yamlEscape(str) {
+    return '"' + String(str).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+  }
+
+  function submitPost() {
+    var text = els["body-text"].value.trim();
+    if (!text) {
+      setStatus(els["post-status"], "Write a few words before posting.", "error");
+      return;
+    }
+
+    els["post-btn"].disabled = true;
+    els["post-btn"].innerHTML = '<span class="spinner"></span> Posting…';
+    setStatus(els["post-status"], "");
+
+    var now = new Date();
+    var p = localDateParts(now);
+    var dateStr = p.y + "-" + p.m + "-" + p.day;
+    var titleStr = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+    var mdPath = "_reflections/" + dateStr + ".md";
+
+    fileExists(mdPath).then(function (exists) {
+      if (exists) mdPath = "_reflections/" + dateStr + "-" + p.hh + p.mm + ".md";
+
+      var photoStep = photoBlob
+        ? blobToBase64(photoBlob).then(function (b64) {
+            var photoPath = "assets/images/post-" + dateStr + "-" + p.hh + p.mm + p.ss + ".jpg";
+            return putFile(photoPath, b64, "Add photo for reflection " + dateStr)
+              .then(function () { return "/" + photoPath; });
+          })
+        : Promise.resolve(null);
+
+      return photoStep.then(function (photoPath) {
+        var frontMatter = "---\ntitle: " + yamlEscape(titleStr) + "\ndate: " + dateStr +
+          (photoPath ? "\nphoto: " + photoPath : "") + "\n---\n" + text + "\n";
+        var b64 = btoa(unescape(encodeURIComponent(frontMatter)));
+        return putFile(mdPath, b64, "Post reflection: " + titleStr);
+      });
+    }).then(function () {
+      clearDraft();
+      photoBlob = null;
+      els["body-text"].value = "";
+      autoGrow();
+      renderPhotoTile();
+      // Relative to wherever this page is actually hosted (works the same
+      // on the .github.io/bhantebo preview and later on bhantebo.com).
+      var siteRoot = location.pathname.replace(/post\/?(index\.html)?$/, "");
+      var liveUrl = location.origin + siteRoot + "reflections/" + p.y + "/" + p.m + "/" + p.day + "/" +
+        mdPath.split("/").pop().replace(/\.md$/, "") + "/";
+      els["success-link"].href = liveUrl;
+      showScreen("success-screen");
+    }).catch(function (err) {
+      setStatus(els["post-status"], err.message || "Something went wrong — please try again.", "error");
+    }).finally(function () {
+      els["post-btn"].disabled = false;
+      els["post-btn"].textContent = "Post";
+    });
+  }
+
+  els["post-btn"].addEventListener("click", submitPost);
+  els["post-another-btn"].addEventListener("click", function () { showScreen("composer-screen"); });
+
+  // ---------------- Boot ----------------
+
+  function boot() {
+    var token = getToken();
+    if (!token) { showScreen("login-screen"); return; }
+    whoAmI().then(function (user) {
+      els["who-name"].textContent = user.login;
+      loadDraft();
+      renderPhotoTile();
+      showScreen("composer-screen");
+      autoGrow(); // after the element is visible, so scrollHeight is accurate
+    }).catch(function () {
+      clearToken();
+      showScreen("login-screen");
+    });
+  }
+
+  els["login-btn"].addEventListener("click", function () {
+    els["login-btn"].disabled = true;
+    setStatus(els["login-error"], "");
+    login().then(function (token) {
+      saveToken(token);
+      els["login-btn"].disabled = false;
+      boot();
+    }).catch(function (err) {
+      els["login-btn"].disabled = false;
+      setStatus(els["login-error"], err.message, "error");
+    });
+  });
+
+  els["logout-btn"].addEventListener("click", function () {
+    clearToken();
+    showScreen("login-screen");
+  });
+
+  boot();
+})();
+</script>
+</body>
+</html>

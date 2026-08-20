@@ -134,7 +134,7 @@
 <div id="success-screen" class="screen hidden">
   <div class="check">🙏</div>
   <h1>Posted</h1>
-  <a id="success-link" href="#" target="_blank" rel="noopener">View it live →</a>
+  <a id="success-link" href="#" target="_blank" rel="noopener">See all reflections →</a>
   <button id="post-another-btn" class="btn" style="margin-top:8px">Post Another</button>
 </div>
 
@@ -317,18 +317,6 @@
 
   function pad(n) { return String(n).padStart(2, "0"); }
 
-  // Mirrors Jekyll's Utils.slugify (default mode) exactly: collapse any
-  // run of non-alphanumeric characters to a single hyphen, trim leading/
-  // trailing hyphens, downcase. Jekyll's :name permalink placeholder runs
-  // every filename through this — e.g. "2026-08-19_2322" really becomes
-  // "2026-08-19-2322" in the URL, not the literal filename. Guessing the
-  // live URL from the raw filename (as an earlier version of this file
-  // did) silently produces a broken link whenever the filename contains
-  // anything slugify normalizes away.
-  function slugifyLikeJekyll(str) {
-    return str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  }
-
   function localDateParts(d) {
     return { y: d.getFullYear(), m: pad(d.getMonth() + 1), day: pad(d.getDate()),
              hh: pad(d.getHours()), mm: pad(d.getMinutes()), ss: pad(d.getSeconds()) };
@@ -382,10 +370,6 @@
 
     fileExists(mdPath).then(function (exists) {
       // Same "-N" shape Decap's own same-day collision suffix uses.
-      // Safe now regardless of separator character: _config.yml's
-      // reflections permalink uses Jekyll's :name (never date-stripped),
-      // and slugifyLikeJekyll() above keeps the guessed URL in sync with
-      // whatever normalization Jekyll actually applies to the filename.
       if (exists) mdPath = "_reflections/" + dateStr + "-" + p.hh + p.mm + ".md";
 
       var photoStep = photoBlob
@@ -408,13 +392,13 @@
       els["body-text"].value = "";
       autoGrow();
       renderPhotoTile();
-      // Relative to wherever this page is actually hosted (works the same
-      // on the .github.io/bhantebo preview and later on bhantebo.com).
+      // Link to the reflections index rather than guessing this post's
+      // exact permalink — simpler and can't drift out of sync with
+      // however Jekyll ends up slugifying the filename. Relative to
+      // wherever this page is actually hosted (works the same on the
+      // .github.io/bhantebo preview and later on bhantebo.com).
       var siteRoot = location.pathname.replace(/post\/?(index\.html)?$/, "");
-      var basename = mdPath.split("/").pop().replace(/\.md$/, "");
-      var liveUrl = location.origin + siteRoot + "reflections/" + p.y + "/" + p.m + "/" + p.day + "/" +
-        slugifyLikeJekyll(basename) + "/";
-      els["success-link"].href = liveUrl;
+      els["success-link"].href = location.origin + siteRoot + "reflections/";
       showScreen("success-screen");
     }).catch(function (err) {
       setStatus(els["post-status"], err.message || "Something went wrong — please try again.", "error");

@@ -369,7 +369,13 @@
     var mdPath = "_reflections/" + dateStr + ".md";
 
     fileExists(mdPath).then(function (exists) {
-      if (exists) mdPath = "_reflections/" + dateStr + "-" + p.hh + p.mm + ".md";
+      // Underscore, not hyphen: Jekyll treats any "YYYY-MM-DD-*" filename
+      // as _posts-style and silently strips the date prefix from the
+      // slug/URL, even for our custom collection (confirmed via a real
+      // build — a hyphenated suffix here produced /reflections/.../2311/
+      // instead of the intended .../2026-08-19-2311/). Underscore doesn't
+      // match that pattern, so the filename is used verbatim.
+      if (exists) mdPath = "_reflections/" + dateStr + "_" + p.hh + p.mm + ".md";
 
       var photoStep = photoBlob
         ? blobToBase64(photoBlob).then(function (b64) {

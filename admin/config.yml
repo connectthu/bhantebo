@@ -35,7 +35,7 @@ collections:
     sortable_fields: ["date", "title"]
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD", default: "" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
       - { label: "Photo", name: "photo", widget: "image", media_library: { config: { multiple: false } } }
       - { label: "Reflection", name: "body", widget: "markdown" }
 
@@ -53,6 +53,6 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "text" }
-      - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD", default: "" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
       - { label: "Time", name: "time", widget: "string", hint: "e.g. 10:00 AM – 2:00 PM · Location" }
       - { label: "Learn More Link", name: "link", widget: "string", required: false }

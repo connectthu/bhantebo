@@ -89,6 +89,29 @@
   .status.error{ color:#B02A2A; }
   .status.ok{ color:#2E6B3E; }
 
+  /* ---------- List screen ---------- */
+  .list-body{ flex:1; overflow-y:auto; padding:0 16px 16px; }
+  .list-row{
+    display:flex; align-items:center; gap:12px; padding:12px 0;
+    border-bottom:1px solid var(--border); cursor:pointer;
+  }
+  .list-row .thumb{
+    width:52px; height:52px; border-radius:8px; object-fit:cover; flex-shrink:0;
+    background:var(--card); border:1px solid var(--border);
+  }
+  .list-row .thumb.placeholder{ display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .list-row .info{ flex:1; min-width:0; }
+  .list-row .date{ font-family:system-ui,sans-serif; font-size:12.5px; font-weight:600; color:var(--accent); }
+  .list-row .snippet{
+    font-size:14.5px; color:var(--ink-soft); margin-top:2px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .list-row .del-btn{
+    flex-shrink:0; width:32px; height:32px; border-radius:50%; border:none;
+    background:transparent; color:var(--ink-faint); font-size:20px; cursor:pointer;
+  }
+  .list-row .del-btn:active{ background:var(--border); }
+
   /* ---------- Success screen ---------- */
   #success-screen{ align-items:center; justify-content:center; text-align:center; padding:32px; gap:16px; }
   #success-screen .check{ font-size:52px; }
@@ -114,8 +137,8 @@
 
 <div id="composer-screen" class="screen hidden">
   <div class="topbar">
-    <span class="who">Posting as <b id="who-name">…</b></span>
-    <button class="link" id="logout-btn">Sign out</button>
+    <span class="who" id="topbar-context">Posting as <b id="who-name">…</b></span>
+    <span id="topbar-actions"></span>
   </div>
   <div class="composer-body">
     <div id="photo-tile" class="photo-tile">
@@ -138,6 +161,17 @@
   <button id="post-another-btn" class="btn" style="margin-top:8px">Post Another</button>
 </div>
 
+<div id="list-screen" class="screen hidden">
+  <div class="topbar">
+    <span class="who">My Posts</span>
+    <button class="link" id="new-post-btn">+ New</button>
+  </div>
+  <div id="list-body" class="list-body">
+    <p id="list-status" class="status hidden" style="margin-top:16px"></p>
+    <div id="list-items"></div>
+  </div>
+</div>
+
 <script>
 (function () {
   "use strict";
@@ -152,14 +186,15 @@
   var DRAFT_KEY = "bhantebo_post_draft";
 
   var els = {};
-  ["login-screen","composer-screen","success-screen","login-btn","login-error",
-   "who-name","logout-btn","photo-tile","photo-input","body-text","post-btn",
-   "post-status","success-link","post-another-btn"].forEach(function (id) {
+  ["login-screen","composer-screen","success-screen","list-screen","login-btn","login-error",
+   "topbar-context","topbar-actions","photo-tile","photo-input","body-text","post-btn",
+   "post-status","success-link","post-another-btn","new-post-btn","list-body","list-status",
+   "list-items"].forEach(function (id) {
     els[id] = document.getElementById(id);
   });
 
   function showScreen(name) {
-    ["login-screen","composer-screen","success-screen"].forEach(function (s) {
+    ["login-screen","composer-screen","success-screen","list-screen"].forEach(function (s) {
       els[s].classList.toggle("hidden", s !== name);
     });
   }
@@ -235,7 +270,8 @@
 
   // ---------------- Photo handling ----------------
 
-  var photoBlob = null; // compressed JPEG Blob, or null
+  var photoBlob = null;        // compressed JPEG Blob for a newly-picked photo, or null
+  var existingPhotoPath = null; // raw front-matter photo path when editing, e.g. "/assets/images/x.jpg"
 
   function resizeAndCompress(file) {
     if (typeof createImageBitmap !== "function") return Promise.resolve(file);
@@ -257,16 +293,24 @@
     });
   }
 
+  function rawUrl(repoPath) {
+    // repoPath like "/assets/images/x.jpg" (leading slash) -> raw.githubusercontent.com URL.
+    // Works unauthenticated since the repo is public.
+    return "https://raw.githubusercontent.com/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/" +
+      GITHUB_BRANCH + "/" + repoPath.replace(/^\//, "");
+  }
+
   function renderPhotoTile() {
     var tile = els["photo-tile"];
-    if (photoBlob) {
-      var url = URL.createObjectURL(photoBlob);
+    var previewSrc = photoBlob ? URL.createObjectURL(photoBlob) : (existingPhotoPath ? rawUrl(existingPhotoPath) : null);
+    if (previewSrc) {
       tile.classList.add("has-photo");
-      tile.innerHTML = '<img src="' + url + '" alt="Selected photo">' +
+      tile.innerHTML = '<img src="' + previewSrc + '" alt="Selected photo">' +
         '<button type="button" class="remove" id="remove-photo-btn" aria-label="Remove photo">×</button>';
       document.getElementById("remove-photo-btn").addEventListener("click", function (e) {
         e.stopPropagation();
         photoBlob = null;
+        existingPhotoPath = null;
         renderPhotoTile();
       });
     } else {
@@ -290,7 +334,70 @@
     });
   });
 
-  // ---------------- Draft persistence ----------------
+  // ---------------- Composer mode (new post vs. editing an existing one) ----------------
+
+  var composerMode = "new"; // "new" | "edit"
+  var editing = null; // { path, sha, title, date, photo } of the entry being edited
+
+  function renderTopbarActions() {
+    var el = els["topbar-actions"];
+    if (composerMode === "edit") {
+      el.innerHTML = '<button class="link" id="cancel-edit-btn">Cancel</button>';
+      document.getElementById("cancel-edit-btn").addEventListener("click", function () {
+        resetComposerToNew();
+        showScreen("list-screen");
+      });
+    } else {
+      el.innerHTML = '<button class="link" id="my-posts-btn">My Posts</button>' +
+        '<button class="link" id="logout-btn">Sign out</button>';
+      document.getElementById("my-posts-btn").addEventListener("click", function () {
+        showScreen("list-screen");
+        loadList();
+      });
+      document.getElementById("logout-btn").addEventListener("click", function () {
+        clearToken();
+        showScreen("login-screen");
+      });
+    }
+  }
+
+  function enterComposer(mode, entry) {
+    composerMode = mode;
+    editing = entry || null;
+    if (mode === "edit") {
+      els["topbar-context"].innerHTML = "Editing <b>" + escapeHtml(entry.date || entry.path) + "</b>";
+      els["body-text"].value = entry.body;
+      existingPhotoPath = entry.photo || null;
+      photoBlob = null;
+      els["post-btn"].textContent = "Save Changes";
+    } else {
+      els["topbar-context"].innerHTML = "Posting as <b id=\"who-name\">" + escapeHtml(currentUserLogin || "") + "</b>";
+      loadDraft();
+      existingPhotoPath = null;
+      photoBlob = null;
+      els["post-btn"].textContent = "Post";
+    }
+    renderPhotoTile();
+    renderTopbarActions();
+    showScreen("composer-screen");
+    autoGrow();
+  }
+
+  function resetComposerToNew() {
+    composerMode = "new";
+    editing = null;
+    photoBlob = null;
+    existingPhotoPath = null;
+    els["body-text"].value = "";
+    els["post-btn"].textContent = "Post";
+  }
+
+  els["new-post-btn"].addEventListener("click", function () {
+    resetComposerToNew();
+    enterComposer("new");
+  });
+
+  // ---------------- Draft persistence (new posts only — edits are short-lived) ----------------
 
   function saveDraft() { localStorage.setItem(DRAFT_KEY, els["body-text"].value); }
   function loadDraft() {
@@ -309,8 +416,10 @@
   var draftTimer = null;
   els["body-text"].addEventListener("input", function () {
     autoGrow();
-    clearTimeout(draftTimer);
-    draftTimer = setTimeout(saveDraft, 400);
+    if (composerMode === "new") {
+      clearTimeout(draftTimer);
+      draftTimer = setTimeout(saveDraft, 400);
+    }
   });
 
   // ---------------- Posting ----------------
@@ -331,15 +440,43 @@
     });
   }
 
+  function contentsUrl(path) {
+    return "/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path;
+  }
+
   function fileExists(path) {
-    return ghFetch("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path + "?ref=" + GITHUB_BRANCH)
+    return ghFetch(contentsUrl(path) + "?ref=" + GITHUB_BRANCH)
       .then(function (r) { return r.status === 200; });
   }
 
-  function putFile(path, contentB64, message) {
-    return ghFetch("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path, {
+  function getFile(path) {
+    return ghFetch(contentsUrl(path) + "?ref=" + GITHUB_BRANCH).then(function (r) {
+      if (!r.ok) throw new Error("Couldn't load that file (GitHub API " + r.status + ").");
+      return r.json();
+    }).then(function (data) {
+      return {
+        sha: data.sha,
+        content: decodeURIComponent(escape(atob(data.content.replace(/\n/g, ""))))
+      };
+    });
+  }
+
+  function putFile(path, contentB64, message, sha) {
+    var body = { message: message, content: contentB64, branch: GITHUB_BRANCH };
+    if (sha) body.sha = sha;
+    return ghFetch(contentsUrl(path), {
       method: "PUT",
-      body: JSON.stringify({ message: message, content: contentB64, branch: GITHUB_BRANCH })
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (b) { throw new Error(b.message || ("GitHub API error " + r.status)); });
+      return r.json();
+    });
+  }
+
+  function deleteFile(path, sha, message) {
+    return ghFetch(contentsUrl(path), {
+      method: "DELETE",
+      body: JSON.stringify({ message: message, sha: sha, branch: GITHUB_BRANCH })
     }).then(function (r) {
       if (!r.ok) return r.json().then(function (b) { throw new Error(b.message || ("GitHub API error " + r.status)); });
       return r.json();
@@ -350,12 +487,53 @@
     return '"' + String(str).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
   }
 
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = String(str == null ? "" : str);
+    return div.innerHTML;
+  }
+
+  // Parses the simple front matter shape this whole system writes
+  // (title/date/photo, then a markdown body) — not a general YAML parser.
+  function parseReflectionMd(raw) {
+    var m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw);
+    if (!m) return { title: "", date: "", photo: null, body: raw.trim() };
+    var data = {};
+    m[1].split(/\r?\n/).forEach(function (line) {
+      var mm = /^([A-Za-z_]+):\s*(.*)$/.exec(line);
+      if (!mm) return;
+      var key = mm[1], val = mm[2].trim();
+      if (val.length >= 2 && val[0] === '"' && val[val.length - 1] === '"') {
+        val = val.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+      }
+      data[key] = val;
+    });
+    return { title: data.title || "", date: data.date || "", photo: data.photo || null, body: m[2].trim() };
+  }
+
+  // Uploads a new photo if one was picked, otherwise keeps whatever photo
+  // path (if any) was already on the entry. Returns the path to write into
+  // front matter ("/assets/images/x.jpg"), or null for no photo.
+  function resolvePhotoPath(namePrefix) {
+    if (photoBlob) {
+      return blobToBase64(photoBlob).then(function (b64) {
+        var now = new Date();
+        var p = localDateParts(now);
+        var photoPath = "assets/images/" + namePrefix + "-" + p.y + p.m + p.day + p.hh + p.mm + p.ss + ".jpg";
+        return putFile(photoPath, b64, "Add photo for reflection " + p.y + "-" + p.m + "-" + p.day)
+          .then(function () { return "/" + photoPath; });
+      });
+    }
+    return Promise.resolve(existingPhotoPath || null);
+  }
+
   function submitPost() {
     var text = els["body-text"].value.trim();
     if (!text) {
       setStatus(els["post-status"], "Write a few words before posting.", "error");
       return;
     }
+    if (composerMode === "edit") { submitEdit(text); return; }
 
     els["post-btn"].disabled = true;
     els["post-btn"].innerHTML = '<span class="spinner"></span> Posting…';
@@ -372,15 +550,7 @@
       // Same "-N" shape Decap's own same-day collision suffix uses.
       if (exists) mdPath = "_reflections/" + dateStr + "-" + p.hh + p.mm + ".md";
 
-      var photoStep = photoBlob
-        ? blobToBase64(photoBlob).then(function (b64) {
-            var photoPath = "assets/images/post-" + dateStr + "-" + p.hh + p.mm + p.ss + ".jpg";
-            return putFile(photoPath, b64, "Add photo for reflection " + dateStr)
-              .then(function () { return "/" + photoPath; });
-          })
-        : Promise.resolve(null);
-
-      return photoStep.then(function (photoPath) {
+      return resolvePhotoPath("post").then(function (photoPath) {
         var frontMatter = "---\ntitle: " + yamlEscape(titleStr) + "\ndate: " + dateStr +
           (photoPath ? "\nphoto: " + photoPath : "") + "\n---\n" + text + "\n";
         var b64 = btoa(unescape(encodeURIComponent(frontMatter)));
@@ -404,24 +574,127 @@
       setStatus(els["post-status"], err.message || "Something went wrong — please try again.", "error");
     }).finally(function () {
       els["post-btn"].disabled = false;
-      els["post-btn"].textContent = "Post";
+      els["post-btn"].textContent = composerMode === "edit" ? "Save Changes" : "Post";
+    });
+  }
+
+  function submitEdit(text) {
+    els["post-btn"].disabled = true;
+    els["post-btn"].innerHTML = '<span class="spinner"></span> Saving…';
+    setStatus(els["post-status"], "");
+
+    resolvePhotoPath("edit").then(function (photoPath) {
+      var frontMatter = "---\ntitle: " + yamlEscape(editing.title) + "\ndate: " + editing.date +
+        (photoPath ? "\nphoto: " + photoPath : "") + "\n---\n" + text + "\n";
+      var b64 = btoa(unescape(encodeURIComponent(frontMatter)));
+      return putFile(editing.path, b64, "Edit reflection: " + editing.path, editing.sha);
+    }).then(function () {
+      resetComposerToNew();
+      showScreen("list-screen");
+      loadList();
+    }).catch(function (err) {
+      setStatus(els["post-status"], err.message || "Something went wrong — please try again.", "error");
+    }).finally(function () {
+      els["post-btn"].disabled = false;
+      els["post-btn"].textContent = composerMode === "edit" ? "Save Changes" : "Post";
     });
   }
 
   els["post-btn"].addEventListener("click", submitPost);
-  els["post-another-btn"].addEventListener("click", function () { showScreen("composer-screen"); });
+  els["post-another-btn"].addEventListener("click", function () {
+    resetComposerToNew();
+    enterComposer("new");
+  });
+
+  // ---------------- List / edit / delete ----------------
+
+  var LIST_PAGE_SIZE = 25; // most-recent N — keeps this fast without pagination UI
+
+  function loadList() {
+    setStatus(els["list-status"], "Loading…");
+    els["list-items"].innerHTML = "";
+
+    ghFetch(contentsUrl("_reflections") + "?ref=" + GITHUB_BRANCH).then(function (r) {
+      if (!r.ok) throw new Error("Couldn't load reflections (GitHub API " + r.status + ").");
+      return r.json();
+    }).then(function (entries) {
+      var mdEntries = entries
+        .filter(function (e) { return e.type === "file" && /\.md$/.test(e.name); })
+        .sort(function (a, b) { return a.name < b.name ? 1 : -1; }) // newest filename first
+        .slice(0, LIST_PAGE_SIZE);
+
+      if (mdEntries.length === 0) {
+        setStatus(els["list-status"], "No reflections yet.");
+        return;
+      }
+
+      return Promise.all(mdEntries.map(function (e) {
+        return getFile(e.path).then(function (file) {
+          var parsed = parseReflectionMd(file.content);
+          return { path: e.path, sha: file.sha, title: parsed.title, date: parsed.date,
+                    photo: parsed.photo, body: parsed.body };
+        }).catch(function () {
+          return { path: e.path, sha: e.sha, title: e.name, date: "", photo: null, body: "" };
+        });
+      })).then(function (details) {
+        setStatus(els["list-status"], "");
+        renderList(details);
+      });
+    }).catch(function (err) {
+      setStatus(els["list-status"], err.message || "Couldn't load reflections.", "error");
+    });
+  }
+
+  function renderList(details) {
+    var container = els["list-items"];
+    container.innerHTML = "";
+    details.forEach(function (entry) {
+      var row = document.createElement("div");
+      row.className = "list-row";
+
+      var thumbHtml = entry.photo
+        ? '<img class="thumb" src="' + rawUrl(entry.photo) + '" alt="">'
+        : '<div class="thumb placeholder">📝</div>';
+
+      row.innerHTML =
+        thumbHtml +
+        '<div class="info">' +
+          '<div class="date">' + escapeHtml(entry.date || entry.title) + '</div>' +
+          '<div class="snippet">' + escapeHtml(entry.body.slice(0, 80)) + '</div>' +
+        '</div>' +
+        '<button type="button" class="del-btn" aria-label="Delete">×</button>';
+
+      row.addEventListener("click", function () {
+        enterComposer("edit", entry);
+      });
+      row.querySelector(".del-btn").addEventListener("click", function (e) {
+        e.stopPropagation();
+        var label = entry.date || entry.title || entry.path;
+        if (!confirm('Delete "' + label + '"? This can\'t be undone from here.')) return;
+        row.style.opacity = "0.4";
+        deleteFile(entry.path, entry.sha, "Delete reflection: " + entry.path).then(function () {
+          row.remove();
+        }).catch(function (err) {
+          row.style.opacity = "1";
+          alert(err.message || "Couldn't delete that post — please try again.");
+        });
+      });
+
+      container.appendChild(row);
+    });
+  }
 
   // ---------------- Boot ----------------
+
+  var currentUserLogin = "";
 
   function boot() {
     var token = getToken();
     if (!token) { showScreen("login-screen"); return; }
     whoAmI().then(function (user) {
-      els["who-name"].textContent = user.login;
-      loadDraft();
-      renderPhotoTile();
-      showScreen("composer-screen");
-      autoGrow(); // after the element is visible, so scrollHeight is accurate
+      currentUserLogin = user.login;
+      resetComposerToNew();
+      enterComposer("new");
     }).catch(function () {
       clearToken();
       showScreen("login-screen");
@@ -439,11 +712,6 @@
       els["login-btn"].disabled = false;
       setStatus(els["login-error"], err.message, "error");
     });
-  });
-
-  els["logout-btn"].addEventListener("click", function () {
-    clearToken();
-    showScreen("login-screen");
   });
 
   boot();

@@ -18,11 +18,12 @@ email: hello@bhanteboddhicitta.com
 accent_color: "#B6510F"
 
 social:
-  insight_timer: "https://insighttimer.com"
+  insight_timer: "https://insighttimer.com/BhanteBodhicitta"
   padma_refuge: "https://padmarefuge.org"
-  instagram: "https://instagram.com"
+  instagram: "https://www.instagram.com/bhantebodhicitta"
   facebook: "https://facebook.com/BhanteBo"
-  donate: "https://padmarefuge.org/donate"
+  donate_canada: "https://www.canadahelps.org/en/charities/padma-refuge-foundation/"
+  donate_international: "https://www.paypal.com/ca/fundraiser/charity/5418916"
 
 # Build settings
 markdown: kramdown

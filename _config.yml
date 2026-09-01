@@ -5,14 +5,9 @@ description: >-
   A Theravada Buddhist monk's training journal for the 2027 Thudong
   pilgrimage — a 2,600km walk on foot from Thailand to Borobudur
   Temple, Indonesia.
-url: "https://connectthu.github.io"
-# ⚠️ TEMPORARY: set for the connectthu.github.io/bhantebo/ project-page
-# preview (see "Current status" in README.md). When bhantebo.com's DNS is
-# ready and you re-add the CNAME file, change this to:
-#   url: "https://bhantebo.com"
-#   baseurl: ""
-baseurl: "/bhantebo"
-email: hello@bhanteboddhicitta.com
+url: "https://bhantebo.com"
+baseurl: ""
+email: bhantebo@gmail.com
 
 # Theme values (used throughout _includes/*.html and assets/css/style.scss)
 accent_color: "#B6510F"

@@ -7,31 +7,15 @@ backend:
 
 # Files uploaded through the CMS (photos, etc.) land in /assets/images in
 # the repo. public_folder's value is written VERBATIM into each entry's
-# saved photo path — it is content, not just a preview hint — so it must
-# stay the portable, root-relative path here regardless of which domain
-# is currently serving the site. Jekyll's `relative_url` filter is what
-# adds the /bhantebo prefix at render time (see _config.yml's baseurl).
-#
-# ⚠️ Do NOT prefix this with /bhantebo, even temporarily: doing so once
-# already caused saved photo paths to render doubled
-# (/bhantebo/bhantebo/assets/...) once relative_url added the prefix a
-# second time on top. The one accepted cost of keeping this correct: the
-# CMS editor's own thumbnail preview looks broken while editing (it
-# requests the image root-relative to connectthu.github.io, not
-# .../bhantebo/), even though the published site renders it correctly.
-# That preview-only issue resolves itself once bhantebo.com's DNS is
-# live and _config.yml's baseurl goes back to "" (see "Deferred custom
-# domain" note in _config.yml / memory) — nothing here will need to
-# change at that point.
+# saved photo path — keep it root-relative (matches Jekyll's relative_url
+# output at baseurl: "").
 media_folder: "assets/images"
 public_folder: "/assets/images"
 
 publish_mode: simple
-# ⚠️ TEMPORARY: pointed at the github.io preview until bhantebo.com's DNS
-# is live. Change these back to https://bhantebo.com then.
-site_url: https://connectthu.github.io/bhantebo/
-display_url: https://connectthu.github.io/bhantebo/
-logo_url: /bhantebo/assets/images/monk-path-buddha.jpg
+site_url: https://bhantebo.com
+display_url: https://bhantebo.com
+logo_url: /assets/images/monk-path-buddha.jpg
 
 collections:
   - name: "reflections"

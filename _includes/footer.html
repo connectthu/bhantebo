@@ -1,5 +1,8 @@
 <footer class="site-footer wrap">
-  <div class="copyright">&copy; {{ 'now' | date: "%Y" }} {{ site.title }}</div>
+  <div>
+    <div class="copyright">&copy; {{ 'now' | date: "%Y" }} {{ site.title }}</div>
+    <div class="credit">Made with <a href="https://hammock.earth" target="_blank" rel="noopener">Hammock.Earth</a></div>
+  </div>
   <div style="display:flex;gap:16px">
     <a class="admin-link" href="{{ '/post/' | relative_url }}">Quick post &rarr;</a>
     <a class="admin-link" href="{{ '/admin/' | relative_url }}">Manage content &rarr;</a>

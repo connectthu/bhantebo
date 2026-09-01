@@ -53,7 +53,11 @@ title: Home
 <div class="section wrap newsletter">
   <div class="eyebrow">Stay Connected</div>
   <h2>Get Updates by Email</h2>
-  <p class="lede" style="margin:0 auto 20px;text-align:center">Every reflection Bhante posts feeds this stream &mdash; subscribe with any RSS reader today, or watch for the email newsletter coming soon.</p>
-  <a class="feed-link" href="{{ '/reflections/feed.xml' | relative_url }}">&#128225; Subscribe via RSS</a>
-  <p class="note">Email updates via Buttondown are coming soon. &#128591;</p>
+  <p class="lede" style="margin:0 auto 20px;text-align:center">Every reflection Bhante posts lands in your inbox &mdash; no social media required.</p>
+  <form action="https://buttondown.com/api/emails/embed-subscribe/bhantebo" method="post" target="_blank" class="subscribe-form">
+    <input type="email" name="email" placeholder="you@example.com" required>
+    <input type="hidden" value="1" name="embed">
+    <button type="submit" class="btn-dark">Subscribe</button>
+  </form>
+  <p class="note"><a href="{{ '/reflections/feed.xml' | relative_url }}">Prefer RSS? Subscribe via feed reader &rarr;</a></p>
 </div>

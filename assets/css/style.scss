@@ -216,8 +216,8 @@ h2 { font-size: clamp(28px, 3.6vw, 42px); }
   flex-shrink: 0;
 }
 .follow-link .label { font-family: system-ui, sans-serif; font-weight: 600; font-size: 13.5px; }
-.follow-link.donate { background: var(--dark-panel); color: var(--dark-panel-text); }
-.follow-link.donate .icon { background: var(--gold); color: var(--dark-panel); font-weight: 700; }
+.follow-link.donate { background: var(--accent); color: #FFF9F0; }
+.follow-link.donate .icon { background: #FFF9F0; color: var(--accent); font-weight: 700; }
 
 /* Reflection cards / feed */
 .feed {

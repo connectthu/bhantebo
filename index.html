@@ -3,25 +3,46 @@ layout: default
 title: Home
 ---
 <div class="wrap">
-  <div class="hero">
-    <div>
-      <div class="eyebrow">Thudong Pilgrimage &middot; February&ndash;May 2027</div>
-      <h1>WALK FOR<br>PEACE <span class="accent">2027</span></h1>
-      <div class="subline">THAILAND &middot; MALAYSIA &middot; SINGAPORE &middot; INDONESIA</div>
-      <p class="intro">I have been invited to join the 2027 Thudong pilgrimage &mdash; a 2,600&nbsp;km walking journey on foot from Thailand to Borobudur Temple in Indonesia. If it comes to pass, I will be the first Canadian monk to walk it.</p>
-      <div class="hero-actions">
-        <a href="{{ '/about/' | relative_url }}" class="btn btn-outline">Learn More</a>
-        <a href="{{ site.social.donate_canada }}" target="_blank" rel="noopener" class="btn btn-primary">Donate</a>
-      </div>
-    </div>
-    <div class="hero-media">
-      <img src="{{ '/assets/images/monk-path-buddha.jpg' | relative_url }}" alt="Bhante Bodhicitta walking with his dogs toward the golden Buddha statue at Wutai Shan Buddhist Garden">
-      <div class="badge">~2,600 KM ON FOOT &middot; 4 MONTHS</div>
+  <div class="hero-banner">
+    <h1 class="visually-hidden">All Season Peace Walks. Four Seasons. All People. One Path.</h1>
+    <img src="{{ '/assets/images/all-season-peace-walks-banner.jpg' | relative_url }}" alt="All Season Peace Walks. Four seasons. All people. One path. A Canadian movement for peace, connection and understanding. Bhante Bodhicitta and a group of walkers on the path at Wutai Shan Buddhist Garden.">
+    <p class="intro">All Season Peace Walks is a Canadian peace initiative inspired by the Buddhist tradition of walking pilgrimage. Through every season and every kind of weather, we walk together to cultivate peace within ourselves, build understanding between communities, and carry the teachings of the Buddha into the world.</p>
+    <div class="hero-actions">
+      <a href="{{ '/about/' | relative_url }}" class="btn btn-outline">Learn More</a>
+      <a href="{{ site.social.donate_canada }}" target="_blank" rel="noopener" class="btn btn-primary">Donate</a>
     </div>
   </div>
 </div>
 
 {% include follow-row.html %}
+
+<div id="walk-for-peace" class="section wrap">
+  {% include peace-walk-108.html %}
+</div>
+
+<div id="walks" class="section wrap">
+  <h2>All Season Peace Walks</h2>
+  <p class="lede">Beginning here in Ontario, the walks will connect temples, communities and people of different faiths and backgrounds. Each journey is an invitation to slow down, meet one another, and take a few steps together toward a more peaceful world. Like Canada itself, the movement embraces every season.</p>
+  <p class="lede led-by">Led by Bhante Bodhicitta, a Canadian Buddhist monk, invites people of all backgrounds to walk together in peace, compassion and understanding.</p>
+  <div class="seasons">
+    {% for walk in site.data.peace_walks %}
+    <div class="season-card season-card--{{ walk.season | downcase }}">
+      <div class="season-date">
+        <div class="days">{{ walk.days }}</div>
+        <div class="month">{{ walk.month }}</div>
+        <div class="year">{{ walk.year }}</div>
+      </div>
+      <div class="season-body">
+        <div class="season-name">{{ walk.season }} {{ walk.year }}</div>
+        <div class="distance">{{ walk.distance }}</div>
+        <div class="walk-label">Peace Walk</div>
+        <div class="destination">{{ walk.destination }}</div>
+        <div class="route">{{ walk.route }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 
 <div id="feed" class="section wrap">
   <div class="eyebrow">Every Day, On The Path</div>
@@ -44,7 +65,7 @@ title: Home
     <div>
       <div class="eyebrow">In Progress</div>
       <h2>A Documentary of the Path</h2>
-      <p>We are documenting the training and, if the pilgrimage is confirmed, the full 2,600&nbsp;km journey itself &mdash; robe, bowl, feet, and breath, one step at a time.</p>
+      <p>We are documenting the All Season Peace Walks.</p>
     </div>
     <a href="mailto:{{ site.email }}?subject=Documentary" class="btn">Support the Film</a>
   </div>

@@ -254,7 +254,7 @@
         "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top
       );
       if (!popup) {
-        reject(new Error("Popup was blocked — please allow popups for this site and try again."));
+        reject(new Error("Popup was blocked. Please allow popups for this site and try again."));
         return;
       }
       var workerOrigin = new URL(WORKER_BASE_URL).origin;
@@ -365,7 +365,7 @@
       renderPhotoTile();
       setStatus(els["post-status"], "");
     }).catch(function () {
-      setStatus(els["post-status"], "Couldn't process that photo — try another.", "error");
+      setStatus(els["post-status"], "Couldn't process that photo. Try another.", "error");
     });
   });
 
@@ -636,7 +636,7 @@
       els["success-link"].href = location.origin + siteRoot + "reflections/";
       showScreen("success-screen");
     }).catch(function (err) {
-      setStatus(els["post-status"], err.message || "Something went wrong — please try again.", "error");
+      setStatus(els["post-status"], err.message || "Something went wrong. Please try again.", "error");
     }).finally(function () {
       els["post-btn"].disabled = false;
       els["post-btn"].textContent = composerMode === "edit" ? "Save Changes" : "Post";
@@ -658,7 +658,7 @@
       showScreen("list-screen");
       loadList();
     }).catch(function (err) {
-      setStatus(els["post-status"], err.message || "Something went wrong — please try again.", "error");
+      setStatus(els["post-status"], err.message || "Something went wrong. Please try again.", "error");
     }).finally(function () {
       els["post-btn"].disabled = false;
       els["post-btn"].textContent = composerMode === "edit" ? "Save Changes" : "Post";
@@ -741,7 +741,7 @@
           row.remove();
         }).catch(function (err) {
           row.style.opacity = "1";
-          alert(err.message || "Couldn't delete that post — please try again.");
+          alert(err.message || "Couldn't delete that post. Please try again.");
         });
       });
 

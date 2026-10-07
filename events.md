@@ -17,6 +17,6 @@ permalink: /events/
     {% endfor %}
   </div>
   {% else %}
-  <p class="lede">No events scheduled yet &mdash; check back soon.</p>
+  <p class="lede">No events scheduled yet. Check back soon.</p>
   {% endif %}
 </div>

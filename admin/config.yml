@@ -21,7 +21,7 @@ collections:
   - name: "reflections"
     label: "Reflections"
     label_singular: "Reflection"
-    description: "Daily photo + reflection posts from the training walk."
+    description: "Daily photo + reflection posts from the path."
     folder: "_reflections"
     create: true
     delete: true
@@ -29,10 +29,10 @@ collections:
     # reflection's file/URL short no matter what's typed in Title.
     slug: "{{year}}-{{month}}-{{day}}"
     identifier_field: title
-    summary: "{{date}} — {{title}}"
+    summary: "{{date}}: {{title}}"
     sortable_fields: ["date", "title"]
     fields:
-      - { label: "Title", name: "title", widget: "string", hint: "A short line — the date works well on its own (e.g. \"August 20, 2026\"), or add a brief phrase like \"Day 41 — One Million Steps.\" Put the full reflection in the field below.", pattern: ["^.{1,80}$", "Please keep the title under 80 characters."] }
+      - { label: "Title", name: "title", widget: "string", hint: "A short line. The date works well on its own (e.g. \"August 20, 2026\"), or add a brief phrase like \"Day 41: One Million Steps.\" Put the full reflection in the field below.", pattern: ["^.{1,80}$", "Please keep the title under 80 characters."] }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
       - { label: "Photo", name: "photo", widget: "image", media_library: { config: { multiple: false } } }
       - { label: "Reflection", name: "body", widget: "markdown" }
@@ -46,11 +46,11 @@ collections:
     delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     identifier_field: title
-    summary: "{{date}} — {{title}}"
+    summary: "{{date}}: {{title}}"
     sortable_fields: ["date", "title"]
     fields:
       - { label: "Title", name: "title", widget: "string", pattern: ["^.{1,80}$", "Please keep the title under 80 characters."] }
       - { label: "Description", name: "description", widget: "text" }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
-      - { label: "Time", name: "time", widget: "string", hint: "e.g. 10:00 AM – 2:00 PM · Location" }
+      - { label: "Time", name: "time", widget: "string", hint: "e.g. 10:00 AM to 2:00 PM · Location" }
       - { label: "Learn More Link", name: "link", widget: "string", required: false }

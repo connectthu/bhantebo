@@ -1,0 +1,10 @@
+# Itinerary for the Inaugural 108 KM Peace Walk (from Bhante's poster).
+- { stop: Start,  day: "24/10", time: "08:00", place: "Cham Shan Temple" }
+- { stop: A, time: "10:30", place: "Bayview Ave & Major Mackenzie Dr." }
+- { stop: B, time: "14:00", place: "Major Mackenzie Dr. & Markham Rd." }
+- { stop: C, time: "17:00", place: "ON-48 & Bloomington Rd." }
+- { stop: D, time: "20:00", place: "Shell / Coppins Corners Diner, 4029 Brock Rd.", note: "Arriving around midnight and rest overnight" }
+- { stop: E, day: "25/10", time: "06:00", place: "Tim Hortons, 1889 Scugog St." }
+- { stop: F, time: "09:00", place: "Nestleton Community Centre, 3971 ON-7A" }
+- { stop: G, time: "12:00", place: "Putuo Shan, 4 Lifford Rd." }
+- { stop: Finish, time: "15:00", place: "Wutai Shan Buddhist Garden, 708 Ski Hill Rd." }

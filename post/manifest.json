@@ -1,7 +1,7 @@
 {
-  "name": "Post a Reflection — Bhante Bodhicitta",
+  "name": "Post a Reflection: Bhante Bodhicitta",
   "short_name": "Post",
-  "description": "Quickly post a photo + reflection from the training walk.",
+  "description": "Quickly post a photo + reflection from the path.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

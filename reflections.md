@@ -6,7 +6,7 @@ permalink: /reflections/
 <div class="wrap page-header">
   <div class="eyebrow">Every Day, On The Path</div>
   <h1>Reflections</h1>
-  <p class="lede">Daily photos and short reflections from the training walk. Subscribe via <a href="{{ '/reflections/feed.xml' | relative_url }}">RSS</a> to follow along.</p>
+  <p class="lede">Daily photos and short reflections from the path. Subscribe via <a href="{{ '/reflections/feed.xml' | relative_url }}">RSS</a> to follow along.</p>
 </div>
 
 <div class="section wrap">
@@ -18,6 +18,6 @@ permalink: /reflections/
     {% endfor %}
   </div>
   {% else %}
-  <p class="lede">No reflections posted yet &mdash; check back soon.</p>
+  <p class="lede">No reflections posted yet. Check back soon.</p>
   {% endif %}
 </div>

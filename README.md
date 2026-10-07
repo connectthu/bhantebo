@@ -1,6 +1,6 @@
 # bhantebo.com
 
-Source for **Bhante Bodhicitta's** peace-walk training site — a Jekyll site
+Source for **Bhante Bodhicitta's** All Season Peace Walks site — a Jekyll site
 hosted on GitHub Pages, edited through [Decap CMS](https://decapcms.org) at
 `/admin`, authenticated via a small Cloudflare Worker OAuth proxy (see
 [`worker/`](worker/)).

@@ -1,0 +1,29 @@
+# The four 2027 All Season Peace Walks, shown as the season grid on the homepage.
+- season: Winter
+  days: "16-24"
+  month: JAN
+  year: 2027
+  distance: "249 KM"
+  destination: "Ten Thousand Buddhas Stupas to Cham Shan"
+  route: "Niagara Falls to Markham"
+- season: Spring
+  days: "17-25"
+  month: APR
+  year: 2027
+  distance: "249 KM"
+  destination: "Ten Thousand Buddhas Stupas to Wutai Shan"
+  route: "Niagara Falls to Kawartha Lakes"
+- season: Summer
+  days: "17-25"
+  month: JUL
+  year: 2027
+  distance: "249 KM"
+  destination: "Ten Thousand Buddhas Stupas to Wutai Shan"
+  route: "Niagara Falls to Kawartha Lakes"
+- season: Autumn
+  days: "23-31"
+  month: OCT
+  year: 2027
+  distance: "249 KM"
+  destination: "Ten Thousand Buddhas Stupas to Wutai Shan"
+  route: "Niagara Falls to Kawartha Lakes"

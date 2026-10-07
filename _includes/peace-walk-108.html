@@ -1,0 +1,30 @@
+<div class="season-card season-card--inaugural">
+  <div class="season-date">
+    <div class="days">24-25</div>
+    <div class="month">OCT</div>
+    <div class="year">2026</div>
+  </div>
+  <div class="season-body">
+    <div class="season-name">Inaugural</div>
+    <div class="distance">108 KM</div>
+    <div class="walk-label">Peace Walk</div>
+    <div class="destination">Cham Shan to Wutai Shan</div>
+  </div>
+</div>
+
+<div class="walk-route">
+  <img src="{{ '/assets/images/108km-peace-walk-route-map.jpg' | relative_url }}" alt="Route map of the 108 km Peace Walk from Cham Shan Temple to Wutai Shan Buddhist Garden, with stops A to G. Join, walk, pause, rejoin. Everyone is welcome." loading="lazy">
+  <div>
+    <h3>The Route</h3>
+    <ol class="route-stops">
+      {% for s in site.data.walk_108_route %}
+      <li class="route-stop{% if s.stop == 'Start' or s.stop == 'Finish' %} route-stop--{{ s.stop | downcase }}{% endif %}">
+        <span class="marker">{% if s.stop.size == 1 %}{{ s.stop }}{% endif %}</span>
+        <span class="time">{% if s.stop.size > 1 %}<span class="endpoint">{{ s.stop }}</span>{% endif %}{% if s.day %}<span class="day">{{ s.day }}</span>{% endif %}{{ s.time }}</span>
+        <span class="place">{{ s.place }}</span>
+      </li>
+      {% if s.note %}<li class="route-note">{{ s.note }}</li>{% endif %}
+      {% endfor %}
+    </ol>
+  </div>
+</div>

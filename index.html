@@ -60,16 +60,23 @@ title: Home
   </div>
 </div>
 
-<div class="section wrap">
-  <div class="doc-panel">
-    <div>
-      <div class="eyebrow">In Progress</div>
-      <h2>A Documentary of the Path</h2>
-      <p>We are documenting the All Season Peace Walks.</p>
-    </div>
-    <a href="mailto:{{ site.email }}?subject=Documentary" class="btn">Support the Film</a>
+{% assign press = site.press | sort: 'date' | reverse %}
+{% if press.size > 0 %}
+<div id="press" class="section wrap">
+  <div class="eyebrow">Press</div>
+  <h2>In the News</h2>
+  <div class="press-list">
+    {% for item in press %}
+    <a class="press-card" href="{{ item.link }}" target="_blank" rel="noopener">
+      <div class="outlet">{{ item.outlet }}</div>
+      <div class="headline">{{ item.title }}</div>
+      <div class="byline">{% if item.author and item.author != "" %}By {{ item.author }} &middot; {% endif %}{{ item.date | date: "%B %-d, %Y" }}</div>
+      <div class="read">Read the article &rarr;</div>
+    </a>
+    {% endfor %}
   </div>
 </div>
+{% endif %}
 
 <div class="section wrap newsletter">
   <div class="eyebrow">Stay Connected</div>

@@ -48,6 +48,8 @@ collections:
     permalink: /reflections/:year/:month/:day/:name/
   events:
     output: false
+  press:
+    output: false
 
 defaults:
   - scope:

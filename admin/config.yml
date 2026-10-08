@@ -54,3 +54,21 @@ collections:
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
       - { label: "Time", name: "time", widget: "string", hint: "e.g. 10:00 AM to 2:00 PM · Location" }
       - { label: "Learn More Link", name: "link", widget: "string", required: false }
+
+  - name: "press"
+    label: "Press"
+    label_singular: "Press Article"
+    description: "News articles and features about Bhante. Shown in the In the News section on the homepage, newest first."
+    folder: "_press"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    identifier_field: title
+    summary: "{{date}}: {{outlet}}, {{title}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - { label: "Headline", name: "title", widget: "string" }
+      - { label: "Publication", name: "outlet", widget: "string", hint: "e.g. Peterborough Currents" }
+      - { label: "Author", name: "author", widget: "string", required: false }
+      - { label: "Date Published", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: true, time_format: false, picker_utc: true }
+      - { label: "Link to Article", name: "link", widget: "string" }

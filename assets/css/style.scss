@@ -17,9 +17,6 @@
   --dark-panel-text: #F3E4C8;
   --dark-panel-mute: #C9BBA6;
   --gold: #C9A227;
-  --doc-panel: #7A3410;
-  --doc-panel-text: #FFF9F0;
-  --doc-panel-mute: #F0D9BE;
   --volunteer: #7A3410;
   --volunteer-bg: rgba(122, 52, 16, 0.12);
   --public-bg: rgba(182, 81, 15, 0.1);
@@ -478,21 +475,40 @@ h2 { font-size: clamp(28px, 3.6vw, 42px); }
 .event-row .tags { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .event-row .link { font-family: system-ui, sans-serif; font-size: 12.5px; font-weight: 600; color: var(--accent); }
 
-/* Documentary CTA */
-.doc-panel {
-  background: var(--doc-panel);
-  border-radius: 8px;
-  padding: clamp(28px, 5vw, 48px);
+/* In the News */
+.press-list {
   display: grid;
-  grid-template-columns: minmax(240px, 1.3fr) minmax(180px, 0.7fr);
-  gap: 28px;
-  align-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
 }
-@media (max-width: 640px) { .doc-panel { grid-template-columns: 1fr; } }
-.doc-panel .eyebrow { color: #F3D9B8; }
-.doc-panel h2 { color: var(--doc-panel-text); font-size: clamp(24px, 3vw, 32px); }
-.doc-panel p { font-size: 15.5px; line-height: 1.7; color: var(--doc-panel-mute); margin: 0; max-width: 56ch; }
-.doc-panel .btn { justify-self: start; background: #FFF9F0; color: var(--doc-panel); white-space: nowrap; }
+.press-card {
+  display: block;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 22px 24px;
+  color: var(--ink);
+}
+.press-card:hover { text-decoration: none; border-color: var(--accent); }
+.press-card .outlet {
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.press-card .headline {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.press-card .byline { font-family: system-ui, sans-serif; font-size: 13px; color: var(--ink-faint); margin-bottom: 14px; }
+.press-card .read { font-family: system-ui, sans-serif; font-size: 13.5px; font-weight: 600; color: var(--accent); }
 
 /* Newsletter / feed callout */
 .newsletter { text-align: center; }

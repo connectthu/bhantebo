@@ -447,6 +447,14 @@ h2 { font-size: clamp(28px, 3.6vw, 42px); }
   font-weight: 600;
   color: var(--accent);
 }
+.route-footnote {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-mute);
+  margin: 14px 0 0;
+}
+.route-footnote + .route-footnote { margin-top: 4px; }
 
 /* Events */
 .events-list { display: flex; flex-direction: column; gap: 12px; }

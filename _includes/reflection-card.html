@@ -1,7 +1,8 @@
 {% assign formatted_date = include.reflection.date | date: "%B %-d, %Y" %}
 <article class="reflection-card">
-  <a href="{{ include.reflection.url | relative_url }}">
+  <a class="card-photo" href="{{ include.reflection.url | relative_url }}">
     <img src="{{ include.reflection.photo | relative_url }}" alt="{{ include.reflection.title | escape }}">
+    {% if include.reflection.photos and include.reflection.photos.size > 0 %}<span class="more-photos">+{{ include.reflection.photos.size }}</span>{% endif %}
   </a>
   <div class="body">
     <div class="date"><a href="{{ include.reflection.url | relative_url }}">{{ include.reflection.date | date: "%b %-d, %Y" }}</a></div>

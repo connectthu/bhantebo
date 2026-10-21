@@ -76,6 +76,33 @@
   }
   #photo-input{ display:none; }
 
+  /* Multi-photo grid: first photo is the cover */
+  .photo-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .photo-grid .thumb-tile{
+    position:relative; aspect-ratio:1; border-radius:10px; overflow:hidden;
+    background:var(--card); border:1px solid var(--border); cursor:pointer;
+  }
+  .photo-grid .thumb-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .photo-grid .thumb-tile.cover{ grid-column:span 3; aspect-ratio:4/3; }
+  .photo-grid .cover-badge{
+    position:absolute; left:8px; top:8px; background:var(--accent); color:#FFF9F0;
+    font-family:system-ui,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; padding:4px 8px; border-radius:10px;
+  }
+  .photo-grid .remove{
+    position:absolute; top:6px; right:6px; width:30px; height:30px; border-radius:50%;
+    background:rgba(36,28,21,0.65); color:#fff; border:none; font-size:17px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .photo-grid .add-tile{
+    aspect-ratio:1; border-radius:10px; border:2px dashed var(--border); background:var(--card);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    cursor:pointer; color:var(--ink-faint);
+  }
+  .photo-grid .add-tile .plus{ font-size:26px; line-height:1; color:var(--accent); }
+  .photo-grid .add-tile .label{ font-family:system-ui,sans-serif; font-size:12.5px; font-weight:600; }
+  .photo-hint{ font-family:system-ui,sans-serif; font-size:12.5px; color:var(--ink-faint); margin:-4px 0 0; }
+
   #body-text{
     flex:0 0 auto; min-height:160px; width:100%; resize:none; border:none; background:transparent;
     font-family:'Lora',serif; font-size:17px; line-height:1.6; color:var(--ink); padding:4px 2px;
@@ -130,7 +157,7 @@
 <div id="login-screen" class="screen">
   <div class="brand">Bhante Bodhicitta</div>
   <h1>Post a Reflection</h1>
-  <p>Sign in with the GitHub account you use for the site to post a quick photo + reflection.</p>
+  <p>Sign in with the GitHub account you use for the site to post a quick reflection with photos.</p>
   <button id="login-btn" class="btn">Sign in with GitHub</button>
   <p id="login-error" class="status error hidden"></p>
 </div>
@@ -143,9 +170,11 @@
   <div class="composer-body">
     <div id="photo-tile" class="photo-tile">
       <span class="plus">+</span>
-      <span class="label">Add Photo</span>
+      <span class="label">Add Photos</span>
     </div>
-    <input id="photo-input" type="file" accept="image/*">
+    <div id="photo-grid" class="photo-grid hidden"></div>
+    <p id="photo-hint" class="photo-hint hidden"></p>
+    <input id="photo-input" type="file" accept="image/*" multiple>
     <textarea id="body-text" placeholder="Share today's reflection…"></textarea>
   </div>
   <div class="composer-footer">
@@ -222,7 +251,7 @@
 
   var els = {};
   ["login-screen","composer-screen","success-screen","list-screen","login-btn","login-error",
-   "topbar-context","topbar-actions","photo-tile","photo-input","body-text","post-btn",
+   "topbar-context","topbar-actions","photo-tile","photo-grid","photo-hint","photo-input","body-text","post-btn",
    "post-status","success-link","post-another-btn","new-post-btn","list-body","list-status",
    "list-items"].forEach(function (id) {
     els[id] = document.getElementById(id);
@@ -305,8 +334,11 @@
 
   // ---------------- Photo handling ----------------
 
-  var photoBlob = null;        // compressed JPEG Blob for a newly-picked photo, or null
-  var existingPhotoPath = null; // raw front-matter photo path when editing, e.g. "/assets/images/x.jpg"
+  // The post's photos, in display order; photos[0] is the cover. Each item
+  // is either { blob } (newly picked, compressed, not uploaded yet) or
+  // { path } (already in the repo, e.g. "/assets/images/x.jpg").
+  var MAX_PHOTOS = 10;
+  var photos = [];
 
   function resizeAndCompress(file) {
     if (typeof createImageBitmap !== "function") return Promise.resolve(file);
@@ -335,35 +367,77 @@
       GITHUB_BRANCH + "/" + repoPath.replace(/^\//, "");
   }
 
+  function photoSrc(item) {
+    if (item.blob) {
+      if (!item.url) item.url = URL.createObjectURL(item.blob);
+      return item.url;
+    }
+    return rawUrl(item.path);
+  }
+
   function renderPhotoTile() {
-    var tile = els["photo-tile"];
-    var previewSrc = photoBlob ? URL.createObjectURL(photoBlob) : (existingPhotoPath ? rawUrl(existingPhotoPath) : null);
-    if (previewSrc) {
-      tile.classList.add("has-photo");
-      tile.innerHTML = '<img src="' + previewSrc + '" alt="Selected photo">' +
-        '<button type="button" class="remove" id="remove-photo-btn" aria-label="Remove photo">×</button>';
-      document.getElementById("remove-photo-btn").addEventListener("click", function (e) {
+    var empty = photos.length === 0;
+    els["photo-tile"].classList.toggle("hidden", !empty);
+    els["photo-grid"].classList.toggle("hidden", empty);
+    els["photo-hint"].classList.toggle("hidden", photos.length < 2);
+    els["photo-hint"].textContent = "The first photo is the cover. Tap another photo to make it the cover.";
+    if (empty) return;
+
+    var grid = els["photo-grid"];
+    grid.innerHTML = "";
+    photos.forEach(function (item, i) {
+      var tile = document.createElement("div");
+      tile.className = "thumb-tile" + (i === 0 ? " cover" : "");
+      tile.innerHTML = '<img src="' + photoSrc(item) + '" alt="Photo ' + (i + 1) + '">' +
+        (i === 0 && photos.length > 1 ? '<span class="cover-badge">Cover</span>' : "") +
+        '<button type="button" class="remove" aria-label="Remove photo">×</button>';
+      tile.querySelector(".remove").addEventListener("click", function (e) {
         e.stopPropagation();
-        photoBlob = null;
-        existingPhotoPath = null;
+        photos.splice(i, 1);
         renderPhotoTile();
       });
-    } else {
-      tile.classList.remove("has-photo");
-      tile.innerHTML = '<span class="plus">+</span><span class="label">Add Photo</span>';
+      tile.addEventListener("click", function () {
+        if (i === 0) return;
+        photos.unshift(photos.splice(i, 1)[0]); // make this one the cover
+        renderPhotoTile();
+      });
+      grid.appendChild(tile);
+    });
+    if (photos.length < MAX_PHOTOS) {
+      var add = document.createElement("div");
+      add.className = "add-tile";
+      add.innerHTML = '<span class="plus">+</span><span class="label">Add</span>';
+      add.addEventListener("click", function () { els["photo-input"].click(); });
+      grid.appendChild(add);
     }
   }
 
   els["photo-tile"].addEventListener("click", function () { els["photo-input"].click(); });
   els["photo-input"].addEventListener("change", function () {
-    var file = els["photo-input"].files[0];
+    var files = Array.prototype.slice.call(els["photo-input"].files || []);
     els["photo-input"].value = "";
-    if (!file) return;
-    setStatus(els["post-status"], "Processing photo…");
-    resizeAndCompress(file).then(function (blob) {
-      photoBlob = blob;
-      renderPhotoTile();
-      setStatus(els["post-status"], "");
+    if (!files.length) return;
+    var room = MAX_PHOTOS - photos.length;
+    var skipped = Math.max(0, files.length - room);
+    files = files.slice(0, room);
+
+    // One at a time keeps memory low on phones with big camera photos.
+    var done = 0;
+    files.reduce(function (chain, file) {
+      return chain.then(function () {
+        setStatus(els["post-status"], files.length > 1
+          ? "Processing photo " + (done + 1) + " of " + files.length + "…"
+          : "Processing photo…");
+        return resizeAndCompress(file).then(function (blob) {
+          done++;
+          photos.push({ blob: blob });
+          renderPhotoTile();
+        });
+      });
+    }, Promise.resolve()).then(function () {
+      setStatus(els["post-status"], skipped
+        ? "Up to " + MAX_PHOTOS + " photos per post, so " + skipped + (skipped === 1 ? " photo was" : " photos were") + " left out."
+        : "", skipped ? "error" : null);
     }).catch(function () {
       setStatus(els["post-status"], "Couldn't process that photo. Try another.", "error");
     });
@@ -372,7 +446,7 @@
   // ---------------- Composer mode (new post vs. editing an existing one) ----------------
 
   var composerMode = "new"; // "new" | "edit"
-  var editing = null; // { path, sha, title, date, photo } of the entry being edited
+  var editing = null; // { path, sha, title, date, photos } of the entry being edited
 
   function renderTopbarActions() {
     var el = els["topbar-actions"];
@@ -402,14 +476,12 @@
     if (mode === "edit") {
       els["topbar-context"].innerHTML = "Editing <b>" + escapeHtml(entry.date || entry.path) + "</b>";
       els["body-text"].value = entry.body;
-      existingPhotoPath = entry.photo || null;
-      photoBlob = null;
+      photos = entry.photos.map(function (p) { return { path: p }; });
       els["post-btn"].textContent = "Save Changes";
     } else {
       els["topbar-context"].innerHTML = "Posting as <b id=\"who-name\">" + escapeHtml(currentUserLogin || "") + "</b>";
       loadDraft();
-      existingPhotoPath = null;
-      photoBlob = null;
+      photos = [];
       els["post-btn"].textContent = "Post";
     }
     renderPhotoTile();
@@ -421,8 +493,7 @@
   function resetComposerToNew() {
     composerMode = "new";
     editing = null;
-    photoBlob = null;
-    existingPhotoPath = null;
+    photos = [];
     els["body-text"].value = "";
     els["post-btn"].textContent = "Post";
   }
@@ -560,38 +631,71 @@
     return div.innerHTML;
   }
 
-  // Parses the simple front matter shape this whole system writes
-  // (title/date/photo, then a markdown body) — not a general YAML parser.
-  function parseReflectionMd(raw) {
-    var m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw);
-    if (!m) return { title: "", date: "", photo: null, body: raw.trim() };
-    var data = {};
-    m[1].split(/\r?\n/).forEach(function (line) {
-      var mm = /^([A-Za-z_]+):\s*(.*)$/.exec(line);
-      if (!mm) return;
-      var key = mm[1], val = mm[2].trim();
-      if (val.length >= 2 && val[0] === '"' && val[val.length - 1] === '"') {
-        val = val.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\");
-      }
-      data[key] = val;
-    });
-    return { title: data.title || "", date: data.date || "", photo: data.photo || null, body: m[2].trim() };
+  function unquote(val) {
+    val = val.trim();
+    if (val.length >= 2 && (val[0] === '"' || val[0] === "'") && val[val.length - 1] === val[0]) {
+      val = val.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+    }
+    return val;
   }
 
-  // Uploads a new photo if one was picked, otherwise keeps whatever photo
-  // path (if any) was already on the entry. Returns the path to write into
-  // front matter ("/assets/images/x.jpg"), or null for no photo.
-  function resolvePhotoPath(namePrefix) {
-    if (photoBlob) {
-      return blobToBase64(photoBlob).then(function (b64) {
-        var now = new Date();
-        var p = localDateParts(now);
-        var photoPath = "assets/images/" + namePrefix + "-" + p.y + p.m + p.day + p.hh + p.mm + p.ss + ".jpg";
-        return putFile(photoPath, b64, "Add photo for reflection " + p.y + "-" + p.m + "-" + p.day)
-          .then(function () { return "/" + photoPath; });
-      });
+  // Parses the simple front matter shape this whole system writes
+  // (title/date/photo, an optional "photos:" list of extra photos, then a
+  // markdown body) — not a general YAML parser. Returns all photos with
+  // the cover first.
+  function parseReflectionMd(raw) {
+    var m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw);
+    if (!m) return { title: "", date: "", photos: [], body: raw.trim() };
+    var data = {}, extra = [], listKey = null;
+    m[1].split(/\r?\n/).forEach(function (line) {
+      var item = /^\s*-\s+(.*)$/.exec(line);
+      if (item && listKey === "photos") { extra.push(unquote(item[1])); return; }
+      var mm = /^([A-Za-z_]+):\s*(.*)$/.exec(line);
+      if (!mm) return;
+      listKey = mm[2].trim() === "" ? mm[1] : null;
+      data[mm[1]] = unquote(mm[2]);
+    });
+    var all = (data.photo ? [data.photo] : []).concat(extra).filter(Boolean);
+    return { title: data.title || "", date: data.date || "", photos: all, body: m[2].trim() };
+  }
+
+  // Front matter for a reflection: cover goes in `photo` (what the site
+  // and older posts already use), the rest in a `photos` list.
+  function buildMd(title, date, photoPaths, text) {
+    var fm = "---\ntitle: " + yamlEscape(title) + "\ndate: " + date;
+    if (photoPaths.length) fm += "\nphoto: " + photoPaths[0];
+    if (photoPaths.length > 1) {
+      fm += "\nphotos:" + photoPaths.slice(1).map(function (p) { return "\n  - " + p; }).join("");
     }
-    return Promise.resolve(existingPhotoPath || null);
+    return fm + "\n---\n" + text + "\n";
+  }
+
+  // Uploads any newly picked photos (one at a time: parallel writes to the
+  // same branch conflict on GitHub) and keeps already-uploaded ones as-is.
+  // Resolves to the front-matter paths in display order, cover first.
+  function resolvePhotoPaths(namePrefix) {
+    var now = new Date();
+    var p = localDateParts(now);
+    var stamp = p.y + p.m + p.day + p.hh + p.mm + p.ss;
+    var newCount = photos.filter(function (it) { return it.blob; }).length;
+    var uploaded = 0;
+    var paths = [];
+    return photos.reduce(function (chain, item, i) {
+      return chain.then(function () {
+        if (!item.blob) { paths.push(item.path); return; }
+        uploaded++;
+        if (newCount > 1) setStatus(els["post-status"], "Uploading photo " + uploaded + " of " + newCount + "…");
+        return blobToBase64(item.blob).then(function (b64) {
+          var photoPath = "assets/images/" + namePrefix + "-" + stamp + (newCount > 1 ? "-" + (i + 1) : "") + ".jpg";
+          return putFile(photoPath, b64, "Add photo for reflection " + p.y + "-" + p.m + "-" + p.day)
+            .then(function () {
+              item.path = "/" + photoPath; // so a retry after a later failure doesn't re-upload
+              delete item.blob;
+              paths.push(item.path);
+            });
+        });
+      });
+    }, Promise.resolve()).then(function () { return paths; });
   }
 
   function submitPost() {
@@ -615,15 +719,15 @@
 
     resolveMdPath(text, dateStr, p).then(function (resolvedPath) {
       mdPath = resolvedPath;
-      return resolvePhotoPath("post");
-    }).then(function (photoPath) {
-      var frontMatter = "---\ntitle: " + yamlEscape(titleStr) + "\ndate: " + dateStr +
-        (photoPath ? "\nphoto: " + photoPath : "") + "\n---\n" + text + "\n";
+      return resolvePhotoPaths("post");
+    }).then(function (photoPaths) {
+      setStatus(els["post-status"], "");
+      var frontMatter = buildMd(titleStr, dateStr, photoPaths, text);
       var b64 = btoa(unescape(encodeURIComponent(frontMatter)));
       return putFile(mdPath, b64, "Post reflection: " + titleStr);
     }).then(function () {
       clearDraft();
-      photoBlob = null;
+      photos = [];
       els["body-text"].value = "";
       autoGrow();
       renderPhotoTile();
@@ -648,9 +752,9 @@
     els["post-btn"].innerHTML = '<span class="spinner"></span> Saving…';
     setStatus(els["post-status"], "");
 
-    resolvePhotoPath("edit").then(function (photoPath) {
-      var frontMatter = "---\ntitle: " + yamlEscape(editing.title) + "\ndate: " + editing.date +
-        (photoPath ? "\nphoto: " + photoPath : "") + "\n---\n" + text + "\n";
+    resolvePhotoPaths("edit").then(function (photoPaths) {
+      setStatus(els["post-status"], "");
+      var frontMatter = buildMd(editing.title, editing.date, photoPaths, text);
       var b64 = btoa(unescape(encodeURIComponent(frontMatter)));
       return putFile(editing.path, b64, "Edit reflection: " + editing.path, editing.sha);
     }).then(function () {
@@ -697,9 +801,9 @@
         return getFile(e.path).then(function (file) {
           var parsed = parseReflectionMd(file.content);
           return { path: e.path, sha: file.sha, title: parsed.title, date: parsed.date,
-                    photo: parsed.photo, body: parsed.body };
+                    photos: parsed.photos, body: parsed.body };
         }).catch(function () {
-          return { path: e.path, sha: e.sha, title: e.name, date: "", photo: null, body: "" };
+          return { path: e.path, sha: e.sha, title: e.name, date: "", photos: [], body: "" };
         });
       })).then(function (details) {
         setStatus(els["list-status"], "");
@@ -717,8 +821,8 @@
       var row = document.createElement("div");
       row.className = "list-row";
 
-      var thumbHtml = entry.photo
-        ? '<img class="thumb" src="' + rawUrl(entry.photo) + '" alt="">'
+      var thumbHtml = entry.photos.length
+        ? '<img class="thumb" src="' + rawUrl(entry.photos[0]) + '" alt="">'
         : '<div class="thumb placeholder">📝</div>';
 
       row.innerHTML =

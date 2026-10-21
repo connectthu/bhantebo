@@ -13,9 +13,7 @@ layout: default
 </div>
 
 <div class="section wrap">
-  {% if page.photo and page.photo != "" %}
-  <img src="{{ page.photo | relative_url }}" alt="{{ page.title | escape }}" style="width:100%;max-width:720px;border-radius:8px;margin-bottom:28px">
-  {% endif %}
+  {% include photo-gallery.html photo=page.photo photos=page.photos title=page.title %}
   <div style="max-width:70ch;font-size:17px;line-height:1.75;color:var(--ink-soft)">
     {{ content }}
   </div>

@@ -1,91 +1,56 @@
 ---
 layout: default
-title: Home
+title: Venerable Bodhicitta | A Life of Practice. A Path of Giving.
+description: Explore the Buddhist practice, meditation, Dhamma reflections and Peace Walks of Venerable Bodhicitta, a Theravāda Buddhist novice monk.
 ---
-<div class="wrap">
-  <div class="hero-banner">
-    <h1 class="visually-hidden">All Season Peace Walks. Four Seasons. All People. One Path.</h1>
-    <img src="{{ '/assets/images/all-season-peace-walks-banner.jpg' | relative_url }}" alt="All Season Peace Walks. Four seasons. All people. One path. A Canadian movement for peace, connection and understanding. Bhante Bodhicitta and a group of walkers on the path at Wutai Shan Buddhist Garden.">
-    <p class="intro">All Season Peace Walks is a Canadian peace initiative inspired by the Buddhist tradition of walking pilgrimage. Through every season and every kind of weather, we walk together to cultivate peace within ourselves, build understanding between communities, and carry the teachings of the Buddha into the world.</p>
+<section class="wrap hero">
+  <div>
+    <div class="eyebrow">A Theravāda Buddhist novice monk</div>
+    <h1>Venerable<br><span class="accent">Bodhicitta</span></h1>
+    <p class="subline">A Life of Practice. A Path of Giving.</p>
+    <p class="intro">Sharing the Buddha's teachings through meditation, contemplative practice, mindful walking and the cultivation of wisdom and compassion.</p>
     <div class="hero-actions">
-      <a href="{{ '/about/' | relative_url }}" class="btn btn-outline">Learn More</a>
-      <a href="{{ site.social.donate_canada }}" target="_blank" rel="noopener" class="btn btn-primary">Donate</a>
+      <a href="{{ '/practice/' | relative_url }}" class="btn btn-primary">Explore the Practice</a>
+      <a href="{{ '/peace-walks/' | relative_url }}" class="btn btn-outline">Discover the Peace Walks</a>
     </div>
   </div>
-</div>
+  <div class="hero-media">
+    <img src="{{ '/assets/images/statue-walk.jpg' | relative_url }}" alt="Venerable Bodhicitta walking with two dogs at Wutai Shan Buddhist Garden" fetchpriority="high">
+  </div>
+</section>
 
 {% include follow-row.html %}
 
-<div id="walk-for-peace" class="section wrap">
-  {% include peace-walk-108.html %}
-</div>
+<section class="section wrap">
+  <div class="eyebrow">A Path of Practice</div>
+  <h2>Study, practice and sharing the Dhamma</h2>
+  <p class="lede">The Buddha's teachings offer a practical path towards understanding the nature of life, cultivating the mind and bringing an end to suffering. As a Theravāda Buddhist novice monk, Venerable Bodhicitta dedicates his life to the study and practice of the Dhamma. His work explores traditional Buddhist meditation, attentive listening, mindful walking and the many ways these practices can be shared with others.</p>
+  <p class="lede">This website is a place to explore that journey, discover opportunities for practice and learn about the activities through which the Dhamma is shared.</p>
+</section>
 
-<div id="walks" class="section wrap">
-  <h2>All Season Peace Walks</h2>
-  <p class="lede">Beginning here in Ontario, the walks will connect temples, communities and people of different faiths and backgrounds. Each journey is an invitation to slow down, meet one another, and take a few steps together toward a more peaceful world. Like Canada itself, the movement embraces every season.</p>
-  <p class="lede led-by">Led by Bhante Bodhicitta, a Canadian Buddhist monk, invites people of all backgrounds to walk together in peace, compassion and understanding.</p>
-  <div class="seasons">
-    {% for walk in site.data.peace_walks %}
-    <div class="season-card season-card--{{ walk.season | downcase }}">
-      <div class="season-date">
-        <div class="days">{{ walk.days }}</div>
-        <div class="month">{{ walk.month }}</div>
-        <div class="year">{{ walk.year }}</div>
-      </div>
-      <div class="season-body">
-        <div class="season-name">{{ walk.season }} {{ walk.year }}</div>
-        <div class="distance">{{ walk.distance }}</div>
-        <div class="walk-label">Peace Walk</div>
-        <div class="destination">{{ walk.destination }}</div>
-        <div class="route">{{ walk.route }}</div>
-      </div>
-    </div>
-    {% endfor %}
+<section class="section wrap">
+  <div class="eyebrow">Explore</div>
+  <h2>Practice in many forms</h2>
+  <div class="content-grid">
+    <a class="content-card" href="{{ '/practice/' | relative_url }}#buddhist-meditation"><span class="eyebrow">Practice</span><h3>Buddhist Meditation</h3><p>Explore Buddhist meditation, Dhamma teachings, guided practices and reflections on the Noble Eightfold Path.</p><span class="read">Explore the Practice →</span></a>
+    <a class="content-card" href="{{ '/practice/' | relative_url }}#sound-meditation"><span class="eyebrow">Listening · Stillness · Awareness</span><h3>Sound Meditation</h3><p>Discover Guanyin Sound Meditation and the use of sound as a support for stillness, attentive awareness and contemplation.</p><span class="read">Learn about the practice →</span></a>
+    <a class="content-card" href="{{ '/peace-walks/' | relative_url }}"><span class="eyebrow">Pilgrimage</span><h3>Peace Walks</h3><p>Follow the completed 108 km Peace Walk from Cham Shan to Wutai Shan and the developing All Season Peace Walks initiative.</p><span class="read">Discover the Peace Walks →</span></a>
+    <a class="content-card" href="{{ '/events/' | relative_url }}"><span class="eyebrow">In community</span><h3>Events</h3><p>Find information about confirmed meditation sessions, Dhamma gatherings and community activities.</p><span class="read">View Events →</span></a>
   </div>
-</div>
+</section>
 
-<div id="feed" class="section wrap">
-  <div class="eyebrow">Every Day, On The Path</div>
-  <h2>Daily From The Path</h2>
-  <p class="lede">Bhante posts a short update here every day, so friends without social media can still walk along.</p>
+<section class="section wrap feature-story">
+  <div class="feature-story-media"><img src="{{ '/assets/images/wutai-shan-pilgrimage.jpg' | relative_url }}" alt="Pilgrimage at Wutai Shan Buddhist Garden" loading="lazy"></div>
+  <div><div class="eyebrow">A journey of 108 kilometres</div><h2>One step at a time</h2><p class="lede">The barefoot Peace Walk from Cham Shan in Markham to Wutai Shan brought pilgrimage into everyday movement. The journey asked for patience and perseverance, and was shaped by the landscapes and people met along the way.</p><a href="{{ '/peace-walks/' | relative_url }}" class="btn btn-outline">Explore the Journey</a></div>
+</section>
 
-  {% assign latest = site.reflections | sort: 'date' | reverse | slice: 0, 3 %}
-  <div class="feed">
-    {% for reflection in latest %}
-      {% include reflection-card.html reflection=reflection %}
-    {% endfor %}
-  </div>
-  <div class="feed-actions">
-    <a href="{{ '/reflections/' | relative_url }}" class="btn btn-outline">See All Reflections</a>
-  </div>
-</div>
+<section class="section wrap generosity">
+  <div class="eyebrow">Dāna · Generosity</div><h2>The Practice of Giving</h2>
+  <p class="lede">Generosity is an essential part of Buddhist practice. Those wishing to support the preservation and sharing of the Dhamma, monastic development, meditation and community programs can learn more through Padma Refuge Foundation.</p>
+  <a href="{{ site.social.donate_canada }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Support the Dhamma <span class="visually-hidden">(opens in a new tab)</span></a>
+</section>
 
-{% assign press = site.press | sort: 'date' | reverse %}
-{% if press.size > 0 %}
-<div id="press" class="section wrap">
-  <div class="eyebrow">Press</div>
-  <h2>In the News</h2>
-  <div class="press-list">
-    {% for item in press %}
-    <a class="press-card" href="{{ item.link }}" target="_blank" rel="noopener">
-      <div class="outlet">{{ item.outlet }}</div>
-      <div class="headline">{{ item.title }}</div>
-      <div class="byline">{% if item.author and item.author != "" %}By {{ item.author }} &middot; {% endif %}{{ item.date | date: "%B %-d, %Y" }}</div>
-      <div class="read">Read the article &rarr;</div>
-    </a>
-    {% endfor %}
-  </div>
-</div>
-{% endif %}
-
-<div class="section wrap newsletter">
-  <div class="eyebrow">Stay Connected</div>
-  <h2>Get Updates by Email</h2>
-  <p class="lede" style="margin:0 auto 20px;text-align:center">Get regular reflections from Bhante Bo in your inbox and not on social media.</p>
-  <form action="https://buttondown.com/api/emails/embed-subscribe/bhantebo" method="post" target="_blank" class="subscribe-form">
-    <input type="email" name="email" placeholder="you@example.com" required>
-    <input type="hidden" value="1" name="embed">
-    <button type="submit" class="btn-dark">Subscribe</button>
-  </form>
-  <p class="note"><a href="{{ '/reflections/feed.xml' | relative_url }}">Prefer RSS? Subscribe via feed reader &rarr;</a></p>
-</div>
+<section class="section wrap closing-reflection">
+  <h2>The path is practised one step at a time.</h2>
+  <p class="lede">Whether through meditation, study, mindful walking or generosity, may these teachings offer an opportunity to pause, reflect and cultivate a deeper understanding of life.</p>
+</section>

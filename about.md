@@ -1,24 +1,29 @@
 ---
 layout: default
-title: About
+title: About Venerable Bodhicitta
+description: Learn about Venerable Bodhicitta's Theravāda Buddhist monastic practice, training and approach to the Dhamma.
 permalink: /about/
 ---
-<div class="wrap">
-  <div class="page-header" style="margin-bottom:clamp(24px,4vw,40px)">
-    <div class="eyebrow">Meet Bhante Bodhicitta</div>
-  </div>
+<div class="wrap page-header">
+  <div class="eyebrow">A Life of Practice</div>
+  <h1>About Venerable Bodhicitta</h1>
+</div>
 
+<section class="section wrap section--first">
   <div class="about-grid">
-    <img src="{{ '/assets/images/statue-walk.jpg' | relative_url }}" alt="Bhante Bodhicitta walking his dogs past the thousand-Buddha statues at Wutai Shan Buddhist Garden">
+    <img src="{{ '/assets/images/statue-walk.jpg' | relative_url }}" alt="Venerable Bodhicitta walking with two dogs at Wutai Shan Buddhist Garden">
     <div>
-      <p class="body-text">A Theravada Buddhist monk from Canada, resident at Wutai Shan Buddhist Garden.</p>
-      <p class="body-text">All Season Peace Walks is a Canadian peace initiative inspired by the Buddhist tradition of walking pilgrimage. Through every season and every kind of weather, we walk together to cultivate peace within ourselves, build understanding between communities, and carry the teachings of the Buddha into the world.</p>
-      <p class="body-text">Beginning here in Ontario, the walks will connect temples, communities and people of different faiths and backgrounds. Each journey is an invitation to slow down, meet one another, and take a few steps together toward a more peaceful world. Like Canada itself, the movement embraces every season.</p>
-      <p class="body-text">So much of my practice has been sound meditation and the Dharma: cultivating peace within, and helping others find stillness in themselves. These walks are an extension of that same intention, except now peace is carried forward physically, one step at a time.</p>
+      <p class="body-text">Venerable Bodhicitta is a Theravāda Buddhist novice monk dedicated to the study, practice and sharing of the Buddha's teachings.</p>
+      <p class="body-text">His work explores traditional Buddhist meditation and contemplative practice, including attentive listening and mindful walking. Through meditation gatherings, educational settings and community outreach, he seeks to make opportunities for Dhamma practice accessible to people from diverse backgrounds.</p>
+      <p class="body-text">He serves as President of <a href="{{ site.social.padma_refuge }}" target="_blank" rel="noopener noreferrer">Padma Refuge Foundation</a> and continues his monastic training under the guidance of Bhante Mudita Bhikkhu Thera.</p>
     </div>
   </div>
-</div>
+</section>
 
-<div id="journey" class="section wrap">
-  {% include peace-walk-108.html %}
-</div>
+<section class="section wrap">
+  <div class="content-grid content-grid--three">
+    <article class="content-card"><span class="eyebrow">Training</span><h2>Monastic Training</h2><p>Venerable Bodhicitta is committed to Theravāda Buddhism and continues his monastic training under the guidance of Bhante Mudita Bhikkhu Thera.</p></article>
+    <article class="content-card"><span class="eyebrow">The Noble Eightfold Path</span><h2>Approach to Practice</h2><p>Practice is grounded in direct experience, ethical conduct, mental cultivation and wisdom, developed through the Noble Eightfold Path.</p></article>
+    <article class="content-card"><span class="eyebrow">Service</span><h2>A Life of Practice</h2><p>Monastic life brings together study, training and service. Through each, there is an opportunity to cultivate understanding and compassion.</p></article>
+  </div>
+</section>

@@ -735,7 +735,7 @@
       // exact permalink — simpler and can't drift out of sync with
       // however Jekyll ends up slugifying the filename. Relative to
       // wherever this page is actually hosted (works the same on the
-      // .github.io/bhantebo preview and later on bhantebo.com).
+      // .github.io/bhantebo preview and on the custom domain).
       var siteRoot = location.pathname.replace(/post\/?(index\.html)?$/, "");
       els["success-link"].href = location.origin + siteRoot + "reflections/";
       showScreen("success-screen");

@@ -1,6 +1,6 @@
 # bhantebo-cms-auth — Decap CMS GitHub OAuth Worker
 
-This Worker lets two people log into `/admin` on bhantebo.com with their own
+This Worker lets two people log into `/admin` on bodhicitta.gives with their own
 GitHub accounts (each needs **write access to `connectthu/bhantebo`**, e.g.
 as a collaborator).
 
@@ -12,7 +12,7 @@ GitHub → Settings → Developer settings → **OAuth Apps → New OAuth App**
 | Field | Value |
 |---|---|
 | Application name | Bhante Bodhicitta CMS |
-| Homepage URL | `https://bhantebo.com` |
+| Homepage URL | `https://bodhicitta.gives` |
 | Authorization callback URL | `https://<your-worker-subdomain>.workers.dev/callback` (update after step 2 — see below) |
 
 Copy the **Client ID**, and generate + copy a **Client Secret**. Keep the
@@ -62,7 +62,7 @@ Cloudflare and are never committed to the repo.
 
 ## 4. Test it
 
-Visit `https://bhantebo.com/admin/`, click "Login with GitHub". You should
+Visit `https://bodhicitta.gives/admin/`, click "Login with GitHub". You should
 get a GitHub popup → authorize → the popup closes and the CMS loads.
 
 ## Notes

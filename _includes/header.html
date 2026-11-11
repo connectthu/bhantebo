@@ -1,9 +1,23 @@
 <header class="site-header wrap">
-  <a class="brand" href="{{ '/' | relative_url }}">BHANTE BODHICITTA</a>
-  <nav>
-    <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a>
-    <a href="{{ '/about/' | relative_url }}" {% if page.url contains '/about' %}class="active"{% endif %}>About</a>
-    <a href="{{ '/reflections/' | relative_url }}" {% if page.url contains '/reflections' %}class="active"{% endif %}>Reflections</a>
-    <a href="{{ '/events/' | relative_url }}" {% if page.url contains '/events' %}class="active"{% endif %}>Events</a>
+  <a class="brand" href="{{ '/' | relative_url }}">VENERABLE BODHICITTA</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+  <nav id="primary-navigation" aria-label="Main navigation">
+    <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active" aria-current="page"{% endif %}>Home</a>
+    <a href="{{ '/about/' | relative_url }}" {% if page.url contains '/about' %}class="active" aria-current="page"{% endif %}>About</a>
+    <a href="{{ '/practice/' | relative_url }}" {% if page.url contains '/practice' %}class="active" aria-current="page"{% endif %}>Practice</a>
+    <a href="{{ '/peace-walks/' | relative_url }}" {% if page.url contains '/peace-walks' %}class="active" aria-current="page"{% endif %}>Peace Walks</a>
+    <a href="{{ '/events/' | relative_url }}" {% if page.url contains '/events' %}class="active" aria-current="page"{% endif %}>Events</a>
   </nav>
 </header>
+<script>
+(function () {
+  var button = document.querySelector('.nav-toggle');
+  var nav = document.getElementById('primary-navigation');
+  if (!button || !nav) return;
+  button.addEventListener('click', function () {
+    var expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!expanded));
+    nav.classList.toggle('is-open', !expanded);
+  });
+}());
+</script>

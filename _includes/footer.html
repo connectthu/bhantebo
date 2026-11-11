@@ -1,29 +1,17 @@
 <footer class="site-footer wrap">
+  <div class="footer-identity"><strong>Venerable Bodhicitta</strong><span>A Life of Practice. A Path of Giving.</span></div>
   <nav class="footer-links" aria-label="Footer">
-    <div class="footer-col">
-      <div class="footer-heading">Follow</div>
-      <a href="{{ site.social.facebook }}" target="_blank" rel="noopener">Facebook</a>
-      <a href="{{ site.social.instagram }}" target="_blank" rel="noopener">Instagram</a>
-      <a href="{{ site.social.youtube }}" target="_blank" rel="noopener">YouTube</a>
-      <a href="{{ site.social.insight_timer }}" target="_blank" rel="noopener">Insight Timer</a>
+    <div class="footer-col"><div class="footer-heading">Explore</div>
+      <a href="{{ '/' | relative_url }}">Home</a><a href="{{ '/about/' | relative_url }}">About</a><a href="{{ '/practice/' | relative_url }}">Practice</a><a href="{{ '/peace-walks/' | relative_url }}">Peace Walks</a><a href="{{ '/events/' | relative_url }}">Events</a>
     </div>
-    <div class="footer-col">
-      <div class="footer-heading">Donate</div>
-      <a href="{{ site.social.donate_canada }}" target="_blank" rel="noopener">Canada</a>
-      <a href="{{ site.social.donate_international }}" target="_blank" rel="noopener">International</a>
+    <div class="footer-col"><div class="footer-heading">Further Practice</div>
+      <a href="{{ site.social.insight_timer }}" target="_blank" rel="noopener noreferrer">Insight Timer</a><a href="https://arahantism.org" target="_blank" rel="noopener noreferrer">Arahānism</a>
     </div>
-    <div class="footer-col">
-      <div class="footer-heading">Community</div>
-      <a href="{{ site.social.padma_refuge }}" target="_blank" rel="noopener">Padma Refuge</a>
-      <a href="{{ site.social.buddhist_garden }}" target="_blank" rel="noopener">Wutai Shan Buddhist Garden</a>
+    <div class="footer-col"><div class="footer-heading">Dāna and Contact</div>
+      <a href="{{ site.social.padma_refuge }}" target="_blank" rel="noopener noreferrer">Padma Refuge Foundation</a><a href="{{ site.social.donate_canada }}" target="_blank" rel="noopener noreferrer">Support the Dhamma</a><a href="mailto:{{ site.email }}">Contact</a>
     </div>
   </nav>
-  <div>
-    <div class="copyright">&copy; {{ 'now' | date: "%Y" }} {{ site.title }}</div>
-    <div class="credit">Made with <a href="https://hammock.earth" target="_blank" rel="noopener">Hammock.Earth</a></div>
-  </div>
-  <div style="display:flex;gap:16px">
-    <a class="admin-link" href="{{ '/post/' | relative_url }}">Quick post &rarr;</a>
-    <a class="admin-link" href="{{ '/admin/' | relative_url }}">Manage content &rarr;</a>
-  </div>
+  <div class="footer-dana">Generosity supports the preservation and sharing of the Dhamma. Donations are directed to Padma Refuge Foundation.</div>
+  <div class="copyright">&copy; {{ 'now' | date: "%Y" }} Venerable Bodhicitta</div>
+  <div class="footer-admin"><a class="admin-link" href="{{ '/post/' | relative_url }}">Quick post</a><a class="admin-link" href="{{ '/admin/' | relative_url }}">Manage content</a></div>
 </footer>

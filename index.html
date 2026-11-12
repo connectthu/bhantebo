@@ -19,11 +19,13 @@ description: Join the Community Sound Meditation with Venerable Bodhicitta in Pe
     <img class="home-event-image" src="{{ homepage_image | relative_url }}" alt="Candlelit community sound meditation led by Venerable Bodhicitta, with singing bowls and guests resting on mats" fetchpriority="high">
     {% endif %}
     <div class="home-event-copy">
-      <div class="eyebrow">Upcoming Community Event</div>
-      <div class="home-event-date">{{ next_event.date | date: "%B %-d, %Y" }}{% if next_event.time %}<span>{{ next_event.time }}</span>{% endif %}</div>
-      <h1 id="home-event-title">{{ next_event.homepage_title | default: next_event.title }}</h1>
+      <div class="eyebrow">A Community Charity Event</div>
+      <div class="home-event-date">{{ next_event.date | date: "%B %-d, %Y" }}</div>
+      {% if next_event.time %}<div class="home-event-time">{{ next_event.time }}</div>{% endif %}
+      <div class="home-event-admission">Free Admission</div>
+      <h1 id="home-event-title">Sound Meditation with Venerable Bodhicitta</h1>
       <p class="home-event-location">{{ next_event.location }}{% if next_event.address %}<br>{{ next_event.address }}{% endif %}</p>
-      <p class="home-event-description">{{ next_event.description }}</p>
+      <p class="home-event-description">{{ next_event.description | replace: " Free admission.", "" }}</p>
       <div class="home-event-actions">
         {% if next_event.ticket_url and next_event.ticket_url != "" %}<a class="btn btn-primary" href="{{ next_event.ticket_url }}" target="_blank" rel="noopener noreferrer">Get tickets on Zeffy <span class="visually-hidden">(opens in a new tab)</span></a>{% endif %}
         <a class="btn btn-outline" href="{{ '/events/' | relative_url }}">Event details</a>

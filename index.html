@@ -14,8 +14,9 @@ description: Join the Community Sound Meditation with Venerable Bodhicitta in Pe
 {% if next_event %}
 <section class="home-event wrap" aria-labelledby="home-event-title">
   <div class="home-event-card">
-    {% if next_event.poster and next_event.poster != "" %}
-    <img class="home-event-poster" src="{{ next_event.poster | relative_url }}" alt="Poster for {{ next_event.title }} on {{ next_event.date | date: '%B %-d, %Y' }} in Peterborough" fetchpriority="high">
+    {% assign homepage_image = next_event.homepage_image | default: next_event.poster %}
+    {% if homepage_image and homepage_image != "" %}
+    <img class="home-event-image" src="{{ homepage_image | relative_url }}" alt="Candlelit community sound meditation led by Venerable Bodhicitta, with singing bowls and guests resting on mats" fetchpriority="high">
     {% endif %}
     <div class="home-event-copy">
       <div class="eyebrow">Upcoming Community Event</div>

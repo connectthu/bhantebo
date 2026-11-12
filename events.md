@@ -34,10 +34,10 @@ permalink: /events/
           <p class="event-location">{{ event.location }}</p>
           {% if event.address %}<p class="event-address">{{ event.address }}</p>{% endif %}
           <p class="event-description">{{ event.description }}</p>
-          {% if event.eventbrite_url and event.eventbrite_url != "" %}
-            <a class="btn btn-primary" href="{{ event.eventbrite_url }}" target="_blank" rel="noopener noreferrer">Sign up on Eventbrite <span class="visually-hidden">(opens in a new tab)</span></a>
+          {% if event.ticket_url and event.ticket_url != "" %}
+            <a class="btn btn-primary" href="{{ event.ticket_url }}" target="_blank" rel="noopener noreferrer">Get tickets on Zeffy <span class="visually-hidden">(opens in a new tab)</span></a>
           {% else %}
-            <button class="btn btn-primary" type="button" disabled aria-disabled="true" title="Eventbrite registration link to be added">Sign up link coming soon</button>
+            <button class="btn btn-primary" type="button" disabled aria-disabled="true" title="Ticket registration link to be added">Sign up link coming soon</button>
           {% endif %}
         </div>
       </article>

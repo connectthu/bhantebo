@@ -1,7 +1,7 @@
 ---
 title: Sound Meditation
 date: 2026-12-12
-time: 7:00 PM
+time: 7:00 PM - 8:00 PM
 location: Austin Doran Hall at The Mount Community Centre
 address: 1545 Monaghan Rd, Peterborough, ON
 description: Experience the calming sounds of singing bowls, gongs, chimes and other instruments, with a guided meditation in a candlelit setting. Free admission. This community charity event is presented by Padma Refuge Foundation. Voluntary contributions help support the Foundation's charitable work.

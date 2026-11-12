@@ -190,10 +190,11 @@ h2 { font-size: clamp(28px, 3.6vw, 42px); }
   background: var(--dark-panel);
   color: var(--dark-panel-text);
 }
-.home-event-poster { width: 100%; max-height: 500px; object-fit: contain; border-radius: 4px; background: var(--bg); }
+.home-event-image { width: 100%; max-height: 500px; object-fit: contain; border-radius: 4px; background: var(--bg); }
 .home-event-copy .eyebrow { color: var(--gold); }
 .home-event-date { font: 600 14px system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dark-panel-text); }
-.home-event-date span { display: block; margin-top: 6px; font: 500 13px system-ui, sans-serif; letter-spacing: 0.02em; text-transform: none; color: var(--dark-panel-mute); }
+.home-event-time { margin-top: 6px; font: 600 16px system-ui, sans-serif; color: var(--dark-panel-mute); }
+.home-event-admission { display: inline-flex; margin-top: 16px; padding: 9px 14px; border-radius: 3px; background: var(--accent); color: #FFF9F0; font: 700 14px system-ui, sans-serif; letter-spacing: 0.04em; }
 .home-event-copy h1 { margin: 12px 0; color: var(--dark-panel-text); font-size: clamp(36px, 5vw, 64px); line-height: 1.05; }
 .home-event-location { margin: 0 0 14px; font: 600 14px/1.6 system-ui, sans-serif; color: var(--dark-panel-mute); }
 .home-event-description { max-width: 58ch; margin: 0 0 22px; line-height: 1.65; color: var(--dark-panel-mute); }

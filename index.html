@@ -1,8 +1,36 @@
 ---
 layout: default
-title: Venerable Bodhicitta | A Life of Practice. A Path of Giving.
-description: Explore the Buddhist practice, meditation, Dhamma reflections and Peace Walks of Venerable Bodhicitta, a Theravāda Buddhist novice monk.
+title: Venerable Bodhicitta | Community Sound Meditation
+description: Join the Community Sound Meditation with Venerable Bodhicitta in Peterborough on December 12, 2026. Free admission; reserve your place through Zeffy.
 ---
+{% assign confirmed_events = site.events | where: "confirmed", true | sort: "date" %}
+{% assign today = site.time | date: "%Y-%m-%d" %}
+{% assign next_event = nil %}
+{% for event in confirmed_events %}
+  {% assign event_day = event.date | date: "%Y-%m-%d" %}
+  {% if event_day >= today and next_event == nil %}{% assign next_event = event %}{% endif %}
+{% endfor %}
+
+{% if next_event %}
+<section class="home-event wrap" aria-labelledby="home-event-title">
+  <div class="home-event-card">
+    {% if next_event.poster and next_event.poster != "" %}
+    <img class="home-event-poster" src="{{ next_event.poster | relative_url }}" alt="Poster for {{ next_event.title }} on {{ next_event.date | date: '%B %-d, %Y' }} in Peterborough" fetchpriority="high">
+    {% endif %}
+    <div class="home-event-copy">
+      <div class="eyebrow">Upcoming Community Event</div>
+      <div class="home-event-date">{{ next_event.date | date: "%B %-d, %Y" }}{% if next_event.time %}<span>{{ next_event.time }}</span>{% endif %}</div>
+      <h1 id="home-event-title">{{ next_event.homepage_title | default: next_event.title }}</h1>
+      <p class="home-event-location">{{ next_event.location }}{% if next_event.address %}<br>{{ next_event.address }}{% endif %}</p>
+      <p class="home-event-description">{{ next_event.description }}</p>
+      <div class="home-event-actions">
+        {% if next_event.ticket_url and next_event.ticket_url != "" %}<a class="btn btn-primary" href="{{ next_event.ticket_url }}" target="_blank" rel="noopener noreferrer">Get tickets on Zeffy <span class="visually-hidden">(opens in a new tab)</span></a>{% endif %}
+        <a class="btn btn-outline" href="{{ '/events/' | relative_url }}">Event details</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% else %}
 <section class="wrap hero">
   <div>
     <div class="eyebrow">A Theravāda Buddhist novice monk</div>
@@ -15,17 +43,17 @@ description: Explore the Buddhist practice, meditation, Dhamma reflections and P
     </div>
   </div>
   <div class="hero-media">
-    <img src="{{ '/assets/images/statue-walk.jpg' | relative_url }}" alt="Venerable Bodhicitta walking with two dogs at Wutai Shan Buddhist Garden" fetchpriority="high">
+    <img src="{{ '/assets/images/statue-walk.jpg' | relative_url }}" alt="Venerable Bodhicitta walking at Wutai Shan Buddhist Garden" fetchpriority="high">
   </div>
 </section>
+{% endif %}
 
 {% include follow-row.html %}
 
 <section class="section wrap">
-  <div class="eyebrow">A Path of Practice</div>
-  <h2>Study, practice and sharing the Dhamma</h2>
-  <p class="lede">The Buddha's teachings offer a practical path towards understanding the nature of life, cultivating the mind and bringing an end to suffering. As a Theravāda Buddhist novice monk, Venerable Bodhicitta dedicates his life to the study and practice of the Dhamma. His work explores traditional Buddhist meditation, attentive listening, mindful walking and the many ways these practices can be shared with others.</p>
-  <p class="lede">This website is a place to explore that journey, discover opportunities for practice and learn about the activities through which the Dhamma is shared.</p>
+  <div class="eyebrow">A Life of Practice · A Path of Giving</div>
+  <h2>Sharing the Buddha's teachings</h2>
+  <p class="lede">Venerable Bodhicitta shares the Dhamma through meditation, contemplative practice, mindful walking and community gatherings. Explore these practices and the journeys that bring people together.</p>
 </section>
 
 <section class="section wrap">
@@ -34,23 +62,14 @@ description: Explore the Buddhist practice, meditation, Dhamma reflections and P
   <div class="content-grid">
     <a class="content-card" href="{{ '/practice/' | relative_url }}#buddhist-meditation"><span class="eyebrow">Practice</span><h3>Buddhist Meditation</h3><p>Explore Buddhist meditation, Dhamma teachings, guided practices and reflections on the Noble Eightfold Path.</p><span class="read">Explore the Practice →</span></a>
     <a class="content-card" href="{{ '/practice/' | relative_url }}#sound-meditation"><span class="eyebrow">Listening · Stillness · Awareness</span><h3>Sound Meditation</h3><p>Discover Guanyin Sound Meditation and the use of sound as a support for stillness, attentive awareness and contemplation.</p><span class="read">Learn about the practice →</span></a>
-    <a class="content-card" href="{{ '/peace-walks/' | relative_url }}"><span class="eyebrow">Pilgrimage</span><h3>Peace Walks</h3><p>Follow the completed 108 km Peace Walk from Cham Shan to Wutai Shan and the developing All Season Peace Walks initiative.</p><span class="read">Discover the Peace Walks →</span></a>
-    <a class="content-card" href="{{ '/events/' | relative_url }}"><span class="eyebrow">In community</span><h3>Events</h3><p>Find information about confirmed meditation sessions, Dhamma gatherings and community activities.</p><span class="read">View Events →</span></a>
+    <a class="content-card" href="{{ '/peace-walks/' | relative_url }}"><span class="eyebrow">Pilgrimage</span><h3>Peace Walks</h3><p>Follow the Peace Walk journeys and learn how mindful walking brings practice into movement.</p><span class="read">Discover the Peace Walks →</span></a>
+    <a class="content-card" href="{{ '/events/' | relative_url }}"><span class="eyebrow">In community</span><h3>Events</h3><p>Find upcoming meditation sessions, Dhamma gatherings and community activities.</p><span class="read">View Events →</span></a>
   </div>
 </section>
 
-<section class="section wrap feature-story">
-  <div class="feature-story-media"><img src="{{ '/assets/images/wutai-shan-pilgrimage.jpg' | relative_url }}" alt="Pilgrimage at Wutai Shan Buddhist Garden" loading="lazy"></div>
-  <div><div class="eyebrow">A journey of 108 kilometres</div><h2>One step at a time</h2><p class="lede">The barefoot Peace Walk from Cham Shan in Markham to Wutai Shan brought pilgrimage into everyday movement. The journey asked for patience and perseverance, and was shaped by the landscapes and people met along the way.</p><a href="{{ '/peace-walks/' | relative_url }}" class="btn btn-outline">Explore the Journey</a></div>
-</section>
-
 <section class="section wrap generosity">
-  <div class="eyebrow">Dāna · Generosity</div><h2>The Practice of Giving</h2>
-  <p class="lede">Generosity is an essential part of Buddhist practice. Those wishing to support the preservation and sharing of the Dhamma, monastic development, meditation and community programs can learn more through Padma Refuge Foundation.</p>
+  <div class="eyebrow">Dāna · Generosity</div>
+  <h2>The Practice of Giving</h2>
+  <p class="lede">Generosity helps make meditation, Dhamma learning and community gatherings possible. Learn how to support this work through Padma Refuge Foundation.</p>
   <a href="{{ site.social.donate_canada }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Support the Dhamma <span class="visually-hidden">(opens in a new tab)</span></a>
-</section>
-
-<section class="section wrap closing-reflection">
-  <h2>The path is practised one step at a time.</h2>
-  <p class="lede">Whether through meditation, study, mindful walking or generosity, may these teachings offer an opportunity to pause, reflect and cultivate a deeper understanding of life.</p>
 </section>

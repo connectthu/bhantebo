@@ -177,6 +177,29 @@ h2 { font-size: clamp(28px, 3.6vw, 42px); }
   margin: 0 auto 28px;
 }
 .hero-banner .hero-actions { justify-content: center; }
+
+/* Homepage feature for the next confirmed community event */
+.home-event { padding-block: 0 clamp(32px, 5vw, 56px); border-top: none; }
+.home-event-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+  padding: clamp(22px, 4vw, 40px);
+  border-radius: 8px;
+  background: var(--dark-panel);
+  color: var(--dark-panel-text);
+}
+.home-event-poster { width: 100%; max-height: 500px; object-fit: contain; border-radius: 4px; background: var(--bg); }
+.home-event-copy .eyebrow { color: var(--gold); }
+.home-event-date { font: 600 14px system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dark-panel-text); }
+.home-event-date span { display: block; margin-top: 6px; font: 500 13px system-ui, sans-serif; letter-spacing: 0.02em; text-transform: none; color: var(--dark-panel-mute); }
+.home-event-copy h1 { margin: 12px 0; color: var(--dark-panel-text); font-size: clamp(36px, 5vw, 64px); line-height: 1.05; }
+.home-event-location { margin: 0 0 14px; font: 600 14px/1.6 system-ui, sans-serif; color: var(--dark-panel-mute); }
+.home-event-description { max-width: 58ch; margin: 0 0 22px; line-height: 1.65; color: var(--dark-panel-mute); }
+.home-event-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.home-event-card .btn-outline { color: var(--dark-panel-text); border-color: var(--dark-panel-text); }
+.home-event-card .btn-outline:hover { background: rgba(243, 228, 200, 0.1); }
 .visually-hidden {
   position: absolute !important;
   width: 1px; height: 1px;
@@ -850,6 +873,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outlin
   .site-header nav a { padding: 12px 4px; border-top: 1px solid var(--border); }
   .content-grid, .content-grid--three, .feature-story { grid-template-columns: 1fr; }
   .feature-story-media { order: 1; }
+  .home-event-card { grid-template-columns: 1fr; }
   .event-card { grid-template-columns: 1fr; }
   .event-poster-placeholder { min-height: 240px; }
 }

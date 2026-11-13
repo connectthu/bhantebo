@@ -7,18 +7,21 @@ url: "https://bodhicitta.gives"
 baseurl: ""
 email: bhantebo@gmail.com
 
+
 # Theme values (used throughout _includes/*.html and assets/css/style.scss)
 accent_color: "#B6510F"
+
 
 social:
   insight_timer: "https://insighttimer.com/BhanteBodhicitta"
   padma_refuge: "https://padmarefuge.org"
-  instagram: "https://www.instagram.com/bhantebodhicitta"
-  facebook: "https://facebook.com/BhanteBo"
+  instagram: "https://www.instagram.com/ven.bodhicitta/"
+  facebook: "https://www.facebook.com/Bodhicitta"
   donate_canada: "https://www.canadahelps.org/en/charities/padma-refuge-foundation/"
   donate_international: "https://www.paypal.com/ca/fundraiser/charity/5418916"
   buddhist_garden: "https://thebuddhistgarden.com/"
-  youtube: "https://www.youtube.com/@bhantebodhicitta"
+  youtube: "https://www.youtube.com/@Ven.Bodhicitta"
+
 
 # Build settings
 markdown: kramdown
@@ -26,60 +29,11 @@ kramdown:
   input: GFM
 permalink: /:title/
 
+
 # Jekyll excludes any dated content whose date is in the future relative to
 # the *build server's* clock (UTC on GitHub Pages). For a same-day training
-# journal that's a footgun, not a feature: a reflection posted in the
-# evening in a timezone behind UTC can read as "future" until UTC catches
+# journal that's a footgun, not a feature: a reflection posted in the evening in a timezone behind UTC can read as "future" until UTC catches
 # up to that calendar date, and would silently not appear on the site for
 # several hours. There's no scheduled-publishing use case here, so disable
 # the exclusion entirely.
 future: true
-
-collections:
-  reflections:
-    output: true
-    # :name (not :title!) on purpose. Jekyll's :title placeholder applies
-    # _posts-style date-prefix stripping to ANY filename shaped like
-    # YYYY-MM-DD-something — e.g. "2026-08-19-1.md" silently becomes just
-    # "1" in the URL — even for a collection that was never meant to use
-    # that convention. :name is always the literal filename, slugified,
-    # never stripped. This makes every reflection's URL predictable from
-    # its filename regardless of how it was created (Decap's own "-1",
-    # "-2" auto-dedup suffix on same-day collisions included).
-    permalink: /reflections/:year/:month/:day/:name/
-  events:
-    output: false
-  press:
-    output: false
-
-defaults:
-  - scope:
-      path: ""
-      type: "reflections"
-    values:
-      layout: reflection
-  - scope:
-      path: ""
-    values:
-      layout: default
-
-plugins:
-  - jekyll-feed
-
-# jekyll-feed: generate a dedicated feed for the reflections collection
-# at a clean, stable URL so a newsletter tool (Buttondown) can subscribe
-# to it directly. See https://github.com/jekyll/jekyll-feed#multiple-feeds
-feed:
-  collections:
-    reflections:
-      path: "reflections/feed.xml"
-
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - Gemfile.localtest
-  - Gemfile.localtest.lock
-  - vendor/
-  - worker/
-  - README.md
-  - node_modules/
